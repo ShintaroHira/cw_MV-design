@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>伴走型・SEO記事制作パートナー｜「生の知見」と「編集力」で成果の出る記事を</title>
+<meta name="description" content="薄い記事は読まれないAI時代。貴社の「生の知見」で読者を納得させ、弊社の「編集力」で購買行動（CV）へ背中を押す。丸投げでは生まれない「成果の出る記事」を共に創り上げる、伴走型のSEO記事制作パートナーです。">
+<link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css" media="all">
+<link rel="stylesheet" href="css/style.css" media="all">
+<link rel="stylesheet" href="css/rebrand.css" media="all">
+<link rel="stylesheet" href="css/fv-fill.css" media="all">
+</head>
+<body class="home">
+
+<header class="header_bg">
+	<div class="inner fv_header">
+		<a href="./" class="brand_logo">
+			<img src="img/logo.png" alt="" width="826" height="200">
+			<span class="brand_logo_txt"><small>伴走型</small>SEO記事制作パートナー</span>
+		</a>
+		<div class="fv_header_cta">
+			<a href="#download" class="fv_header_btn fv_header_btn--sub">資料ダウンロード</a>
+			<a href="#contact" class="fv_header_btn">無料相談</a>
+		</div>
+	</div>
+</header>
+
+<div class="eyecatch3">
+
+	<div class="inner flex_in">
+
+		<div class="eye_in_2">
+
+			<div class="eye_in_txt fade">
+				<p class="catch_ttl_3 fv_lead"><span class="fv_lead_in">伴走型の<em>SEO記事</em>制作パートナー</span></p>
+				<h1 class="v_title_3 fv_catch"><span>Web上にある</span><span>「ツギハギ記事」は、</span><span>もう読まれない。</span></h1>
+				<div class="fv_sub">
+					<p class="fv_sub_head">薄い記事は読まれないAI時代。</p>
+					<p>貴社の<mark>「生の知見」</mark>で読者を納得させ、<br class="pc">弊社の<strong>「編集力」</strong>で購買行動（CV）へ背中を押す。<br class="pc">丸投げでは生まれない<mark>「成果の出る記事」</mark>を共に創り上げます。</p>
+				</div>
+			</div>
+
+			<div class="no1_area fade_down fv_award">
+				<img src="img/fv_award_frame.svg" width="490" height="142" alt="">
+				<ul class="fv_award_txt">
+					<li><span>取材で引き出す</span>一次情報</li>
+					<li><span>編集者による</span>構成編集</li>
+					<li><span>CVまでの</span>導線設計</li>
+				</ul>
+			</div>
+
+			<div class="fv_cta fade">
+				<div class="fv_cta_btns">
+					<div class="fv_cta_main">
+						<p class="fv_cta_micro">相談だけでもお気軽に</p>
+						<a href="#contact" class="fv_btn fv_btn--main">無料で相談する</a>
+					</div>
+					<a href="#download" class="fv_btn fv_btn--sub">サービス資料を見る</a>
+				</div>
+				<p class="fv_cta_note">広告代理店様の、クライアントへのご提案前のご相談も承ります。</p>
+			</div>
+
+		</div>
+
+		<div class="eye_img">
+			<div class="fir fade_right"><img src="img/fv_main.png" width="340" height="604" alt=""></div>
+			<div class="sec fade_down"><img src="img/fv_bg_img.png" width="896" height="575" alt=""></div>
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+(function () {
+	var items = document.querySelectorAll(".fade, .fade_left, .fade_right, .fade_down");
+	if (!("IntersectionObserver" in window)) {
+		items.forEach(function (el) { el.classList.add("fade_in"); });
+		return;
+	}
+	// 初期位置が150pxずれているため、その分だけ判定範囲を広げる
+	var io = new IntersectionObserver(function (entries) {
+		entries.forEach(function (entry) {
+			if (entry.isIntersecting) {
+				entry.target.classList.add("fade_in");
+				io.unobserve(entry.target);
+			}
+		});
+	}, { rootMargin: "150px 0px 150px 0px" });
+	items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

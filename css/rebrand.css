@@ -1,0 +1,1381 @@
+@charset "utf-8";
+
+/* デザインの値（白と鮮やかな青。相談のボタンはゴールド、蛍光ペンは黄色）
+----------------------------------------------------------- */
+
+:root {
+	--fv-navy: #0d2b4e;
+	--fv-text: #34485f;
+	--fv-muted: #5c6f84;
+	--fv-blue: #1769e0;
+	--fv-line: #d3e0f1;
+	--fv-marker: rgb(255 210 64 / 62%);
+	--fv-gold: #d5af55;
+	--fv-gold-hover: #cfa43c;
+	--fv-ease: cubic-bezier(.22, .61, .36, 1);
+}
+
+/* 既存サイトのCSSから来る下線を消す */
+.fv_header a:hover,
+.eyecatch3 a:hover {
+	text-decoration: none;
+}
+
+/* 既存サイトのCSSは body に word-break: break-all を指定しているため、
+   auto-phrase を知らないブラウザ（Safari・Firefox）で「CV」などの英字が途中で折り返される。
+   英字の単語は切らない normal を土台にする（日本語は通常どおり文字の間で折り返す） */
+.header_bg,
+.eyecatch3 {
+	word-break: normal;
+	line-break: strict;
+}
+
+/* ヘッダー
+----------------------------------------------------------- */
+
+.fv_header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: var(--fv-hdr, 84px);
+}
+.fv_header::after {
+	content: none;
+}
+
+.brand_logo {
+	position: relative;
+	display: flex;
+	align-items: center;
+	transition: opacity .25s var(--fv-ease);
+}
+.brand_logo:hover {
+	opacity: .8;
+}
+.brand_logo img {
+	display: block;
+	width: auto;
+	height: clamp(46px, 6.2vh, 56px);
+}
+/* ロゴの文字は画像に入っているので画面には出さず、読み上げと検索のために残す */
+.brand_logo_txt {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.fv_header_cta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.fv_header_btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 44px;
+	padding: 0 24px;
+	border: 1px solid var(--fv-gold);
+	border-radius: 999px;
+	background: var(--fv-gold);
+	box-shadow: 0 6px 16px -8px rgb(176 134 41 / 50%);
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	color: #fff !important;
+	transition: background-color .25s var(--fv-ease), border-color .25s var(--fv-ease), color .25s var(--fv-ease);
+}
+.fv_header_btn:hover {
+	border-color: var(--fv-gold-hover);
+	background: var(--fv-gold-hover);
+}
+.fv_header_btn--sub {
+	border-color: var(--fv-line);
+	background: #fff;
+	box-shadow: none;
+	color: var(--fv-navy) !important;
+}
+.fv_header_btn--sub:hover {
+	border-color: var(--fv-blue);
+	background: #fff;
+	color: var(--fv-blue) !important;
+}
+
+/* FV コピー
+----------------------------------------------------------- */
+
+.fv_lead {
+	max-width: none;
+	margin-bottom: var(--fv-gap-s, 20px);
+}
+/* 枠や地を使わず、線と文字だけの見出しラベル */
+.fv_lead_in {
+	display: inline-flex;
+	align-items: center;
+	color: var(--fv-blue);
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.5;
+	letter-spacing: .12em;
+	white-space: nowrap;
+}
+.fv_lead_in::before {
+	content: "";
+	flex: none;
+	width: 36px;
+	height: 2px;
+	margin-right: 14px;
+	border-radius: 2px;
+	background: var(--fv-blue);
+}
+.fv_lead_in em {
+	font-style: normal;
+	font-weight: 700;
+	color: var(--fv-navy);
+}
+
+.fv_catch {
+	font-size: var(--fv-h1, 52px);
+	font-weight: 900;
+	line-height: 1.28;
+	letter-spacing: .02em;
+	color: var(--fv-navy);
+	font-feature-settings: "palt";
+}
+.fv_catch span {
+	display: block;
+	white-space: nowrap;
+}
+.fv_catch span:nth-child(2) {
+	font-size: 1.08em;
+	color: var(--fv-blue);
+}
+
+.fv_sub {
+	margin-top: var(--fv-gap, 26px);
+	font-feature-settings: "palt";
+}
+.fv_sub p {
+	font-size: var(--fv-body, 15px);
+	font-weight: 500;
+	line-height: 1.9;
+	letter-spacing: .04em;
+	color: var(--fv-text);
+	word-break: auto-phrase;
+}
+.fv_sub .fv_sub_head {
+	margin-bottom: 6px;
+	font-size: var(--fv-lead, 18px);
+	font-weight: 700;
+	line-height: 1.6;
+	color: var(--fv-navy);
+}
+.fv_sub mark,
+.fv_sub strong {
+	font-weight: 700;
+	color: var(--fv-navy);
+	white-space: nowrap;
+}
+.fv_sub mark {
+	background: linear-gradient(transparent 58%, var(--fv-marker) 58%, var(--fv-marker) 94%, transparent 94%);
+}
+
+/* 3つの強み
+----------------------------------------------------------- */
+
+.fv_award {
+	container-type: inline-size;
+	position: relative;
+	width: var(--fv-award-w, 420px);
+	max-width: 100%;
+}
+.eyecatch3 .eye_in_2 .fv_award {
+	margin-top: var(--fv-gap, 26px);
+}
+.eyecatch3 .eye_in_2 .fv_award img {
+	display: block;
+	max-width: none;
+	width: 100%;
+	height: auto;
+	filter: saturate(1.3) brightness(1.04);
+}
+.fv_award_txt li {
+	position: absolute;
+	top: 46%;
+	color: #1760ae;
+	font-size: 4.1cqw;
+	font-weight: 900;
+	line-height: 1.25;
+	letter-spacing: .04em;
+	text-align: center;
+	white-space: nowrap;
+	transform: translate(-50%, -50%);
+}
+.fv_award_txt li:nth-child(1) { left: 15.3%; }
+.fv_award_txt li:nth-child(2) { left: 49.5%; }
+.fv_award_txt li:nth-child(3) { left: 84.3%; }
+.fv_award_txt span {
+	display: block;
+	margin-bottom: .35em;
+	font-size: 2.35cqw;
+	font-weight: 700;
+	letter-spacing: .04em;
+	color: var(--fv-muted);
+}
+
+/* CTA
+----------------------------------------------------------- */
+
+.fv_cta {
+	margin-top: calc(var(--fv-gap, 26px) + 4px);
+}
+.fv_cta_btns {
+	display: flex;
+	align-items: flex-end;
+	gap: 14px;
+}
+.fv_cta_main {
+	text-align: center;
+}
+.fv_cta_micro {
+	margin-bottom: 8px;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.4;
+	letter-spacing: .06em;
+	color: var(--fv-blue);
+}
+.fv_cta_micro::before {
+	content: "＼ ";
+}
+.fv_cta_micro::after {
+	content: " ／";
+}
+
+/* 既存サイトの .eye_in_2 .fv_btn（margin-top:25px）を打ち消す */
+.eye_in_2 .fv_btn {
+	margin-top: 0;
+}
+.fv_btn {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	height: var(--fv-btn-h, 60px);
+	padding: 0 34px;
+	border: 1.5px solid transparent;
+	border-radius: 999px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	white-space: nowrap;
+	transition: background-color .25s var(--fv-ease), border-color .25s var(--fv-ease), color .25s var(--fv-ease), box-shadow .25s var(--fv-ease), transform .25s var(--fv-ease);
+}
+.fv_btn::before {
+	content: none;
+}
+/* 矢印（→）のアイコン。色は文字の色に合わせる */
+.fv_btn::after {
+	content: "";
+	flex: none;
+	width: 18px;
+	height: 18px;
+	background: currentColor;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+	transition: transform .25s var(--fv-ease);
+}
+.fv_btn:hover::after {
+	transform: translateX(4px);
+}
+.fv_btn--main {
+	min-width: 280px;
+	border-color: var(--fv-gold);
+	background: var(--fv-gold);
+	box-shadow: 0 12px 28px -12px rgb(176 134 41 / 55%);
+	font-size: 17px;
+	color: #fff !important;
+}
+.fv_btn--main:hover {
+	border-color: var(--fv-gold-hover);
+	background: var(--fv-gold-hover);
+	box-shadow: 0 16px 32px -12px rgb(176 134 41 / 60%);
+	transform: translateY(-2px);
+}
+.fv_btn--sub {
+	min-width: 230px;
+	border-color: var(--fv-line);
+	background: #fff;
+	font-size: 15px;
+	color: var(--fv-navy) !important;
+}
+.fv_btn--sub:hover {
+	border-color: var(--fv-blue);
+	box-shadow: 0 10px 24px -14px rgb(13 43 78 / 35%);
+	color: var(--fv-blue) !important;
+	transform: translateY(-2px);
+}
+.fv_btn:focus-visible,
+.fv_header_btn:focus-visible {
+	outline: 3px solid rgb(23 105 224 / 35%);
+	outline-offset: 3px;
+}
+.fv_cta_note {
+	margin-top: 14px;
+	font-size: 12.5px;
+	line-height: 1.6;
+	letter-spacing: .04em;
+	color: var(--fv-muted);
+}
+
+/* 表示の動き（ずれを小さく、ゆっくり）
+----------------------------------------------------------- */
+
+.eyecatch3 .fade {
+	transform: translateY(28px);
+}
+.eyecatch3 .fade_down {
+	transform: translateY(-20px);
+}
+.eyecatch3 .fade_right {
+	transform: translateX(-28px);
+}
+.eyecatch3 .fade,
+.eyecatch3 .fade_down,
+.eyecatch3 .fade_right {
+	transition: opacity 1s var(--fv-ease), transform 1s var(--fv-ease);
+}
+.eyecatch3 .fade_in {
+	transform: none;
+}
+.eyecatch3 .fv_award {
+	transition-delay: .12s;
+}
+.eyecatch3 .fv_cta {
+	transition-delay: .24s;
+}
+.eyecatch3 .eye_img .fir {
+	transition-delay: .1s;
+}
+
+/* スマホのヘッダー
+----------------------------------------------------------- */
+
+@media screen and ( max-width:760px ) {
+
+	.header_bg .inner.fv_header {
+		width: 100%;
+		height: 60px;
+		padding: 0 16px;
+	}
+	.brand_logo img {
+		height: 38px;
+	}
+	.fv_header_btn--sub {
+		display: none;
+	}
+	.fv_header_btn {
+		height: 36px;
+		padding: 0 16px;
+		font-size: 12.5px;
+	}
+
+}
+
+/* 縦に積むレイアウト（スマホと、縦向きのタブレット）
+   タブレットにはスマホ用の既存CSSが効かないので、必要な指定はここで全部持つ
+----------------------------------------------------------- */
+
+@media screen and ( max-width:760px ), screen and ( max-width:1279px ) and ( orientation:portrait ) {
+
+	.eyecatch3 {
+		padding: 76px 0 0;
+		background:
+			radial-gradient(90% 40% at 50% 100%, rgb(23 105 224 / 16%) 0%, rgb(23 105 224 / 0%) 70%),
+			linear-gradient(180deg, #fff 0%, #f2f7ff 60%, #e8f1ff 100%);
+	}
+	.eyecatch3 > .inner {
+		width: calc(100% - 40px);
+	}
+
+	/* ボタンを最初の画面に入れるため、コピーの次にCTA、その下に3つの強み。
+	   広い画面でも横に伸びすぎないよう、幅は600pxまで */
+	.eyecatch3 .eye_in_2 {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+		padding-top: 0;
+	}
+	.eyecatch3 .eye_in_txt {
+		order: 1;
+		min-width: 0;
+		padding: 0;
+	}
+	.eyecatch3 .fv_cta {
+		order: 2;
+	}
+	.eyecatch3 .eye_in_2 .fv_award {
+		order: 3;
+		width: 100%;
+		max-width: 330px;
+		margin: 26px auto 0;
+	}
+
+	.fv_lead {
+		width: auto;
+		margin: 0 auto 14px;
+		text-align: center;
+	}
+	.fv_lead_in {
+		font-size: 13px;
+		letter-spacing: .1em;
+	}
+	.fv_lead_in::before,
+	.fv_lead_in::after {
+		content: "";
+		flex: none;
+		width: 22px;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--fv-blue);
+	}
+	.fv_lead_in::before {
+		margin-right: 10px;
+	}
+	.fv_lead_in::after {
+		margin-left: 10px;
+	}
+
+	h1.fv_catch {
+		margin-bottom: 0;
+		font-size: clamp(26px, 8vw, 32px);
+		text-align: center;
+	}
+
+	.fv_sub {
+		position: relative;
+		z-index: 3;
+		margin-top: 16px;
+		padding: 16px 18px;
+		border-radius: 16px;
+		background: #fff;
+		box-shadow: 0 10px 30px -16px rgb(13 43 78 / 30%);
+	}
+	.fv_sub p {
+		font-size: 13.5px;
+		line-height: 1.8;
+	}
+	.fv_sub .fv_sub_head {
+		margin-bottom: 4px;
+		font-size: 15px;
+	}
+
+	.fv_cta {
+		position: relative;
+		z-index: 3;
+		margin-top: 18px;
+	}
+	.fv_cta_btns {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 10px;
+	}
+	.fv_btn {
+		width: 100%;
+		height: 56px;
+	}
+	.fv_btn--sub {
+		height: 52px;
+	}
+	.fv_cta_note {
+		margin-top: 12px;
+		font-size: 11.5px;
+		text-align: center;
+		word-break: auto-phrase;
+		text-wrap: balance;
+	}
+
+	/* 人物は中央に置き、下端に立たせる */
+	.eyecatch3 .eye_img {
+		width: 100%;
+		padding: 0;
+	}
+	.eyecatch3 .eye_img .fir {
+		position: relative;
+		z-index: 1;
+		top: 0;
+		right: auto;
+		width: min(290px, 78%);
+		margin: 20px auto 0;
+	}
+	.eyecatch3 .eye_img .fir img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.eyecatch3 .eye_img .sec {
+		top: auto;
+		right: auto;
+		bottom: 0;
+		left: 50%;
+		margin-left: -240px;
+	}
+	.eyecatch3 .eye_img .sec.fade_down {
+		opacity: .85 !important;
+	}
+	.eyecatch3 .eye_img .sec img {
+		width: 480px;
+		max-width: none;
+		opacity: 1;
+		filter: blur(1.5px);
+		-webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+		mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+	}
+
+}
+
+/* 縦向きのタブレット：PCと同じヘッダー、文字とボタンはひと回り大きく、ボタンは横に並べる
+----------------------------------------------------------- */
+
+@media screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
+
+	.header_bg .inner.fv_header {
+		width: calc(100% - 64px);
+		height: 84px;
+	}
+
+	.eyecatch3 {
+		padding-top: 128px;
+	}
+	.eyecatch3 > .inner {
+		width: calc(100% - 64px);
+	}
+	.eyecatch3 .eye_in_2 {
+		max-width: 680px;
+	}
+
+	.fv_lead {
+		margin-bottom: 18px;
+	}
+	.fv_lead_in {
+		font-size: 15px;
+		letter-spacing: .12em;
+	}
+	.fv_lead_in::before,
+	.fv_lead_in::after {
+		width: 32px;
+	}
+	.fv_lead_in::before {
+		margin-right: 14px;
+	}
+	.fv_lead_in::after {
+		margin-left: 14px;
+	}
+
+	h1.fv_catch {
+		font-size: clamp(40px, 5.6vw, 56px);
+	}
+
+	.fv_sub {
+		margin-top: 26px;
+		padding: 22px 28px;
+		border-radius: 20px;
+	}
+	.fv_sub p {
+		font-size: 15.5px;
+		line-height: 1.9;
+	}
+	.fv_sub .fv_sub_head {
+		margin-bottom: 6px;
+		font-size: 18px;
+	}
+
+	.fv_cta {
+		margin-top: 30px;
+	}
+	.fv_cta_btns {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: center;
+		gap: 14px;
+	}
+	.fv_btn {
+		width: auto;
+		height: 62px;
+	}
+	.fv_btn--sub {
+		height: 62px;
+	}
+	.fv_btn--main {
+		min-width: 300px;
+	}
+	.fv_btn--sub {
+		min-width: 260px;
+	}
+	.fv_cta_note {
+		margin-top: 16px;
+		font-size: 13px;
+	}
+
+	.eyecatch3 .eye_in_2 .fv_award {
+		max-width: 440px;
+		margin-top: 34px;
+	}
+
+	.eyecatch3 .eye_img .fir {
+		width: min(460px, 58vw);
+		margin-top: 28px;
+	}
+	.eyecatch3 .eye_img .sec {
+		margin-left: -380px;
+	}
+	.eyecatch3 .eye_img .sec img {
+		width: 760px;
+	}
+
+}
+
+/* スマホのデザイン（縦向き・横向き共通）
+   ヘッダーの端を本文の端にそろえ、ラベルと見出しは左ぞろえ（PCと同じ読み方）
+----------------------------------------------------------- */
+
+@media screen and ( max-width:760px ) {
+
+	/* ヘッダーの左右の端を、本文の端（左右20px、最大600px）にそろえる */
+	.header_bg .inner.fv_header {
+		width: calc(100% - 40px);
+		max-width: 600px;
+		padding: 0;
+	}
+	.eyecatch3 > .inner {
+		max-width: 600px;
+	}
+
+	.fv_lead {
+		margin: 0 0 12px;
+		text-align: left;
+	}
+	.fv_lead_in {
+		font-size: 13px;
+		letter-spacing: .12em;
+	}
+	.fv_lead_in::before {
+		width: 28px;
+		margin-right: 12px;
+	}
+	.fv_lead_in::after {
+		content: none;
+	}
+
+	h1.fv_catch {
+		font-size: var(--sp-h1, clamp(26px, 8.4vw, 36px));
+		line-height: 1.28;
+		letter-spacing: .01em;
+		text-align: left;
+	}
+
+}
+
+/* スマホの縦向き：PCと同じ構図を縦に組む
+   ・上にラベルと見出し。その下に人物を大きく右に立たせ、まわりに記事のコラージュを浮かべる（枠で囲まない）
+   ・人物の下の方は白に溶け込ませ、その白い所に本文を置いて読みやすくする
+   ・本文の下に3つの強み（月桂樹）、その下にボタン
+   HTMLは変えずに並べ替えるため、文字の列の箱をなくして（display: contents）、中身を格子（grid）に直接並べる
+----------------------------------------------------------- */
+
+@media screen and ( max-width:760px ) and ( orientation:portrait ) {
+
+	:root {
+		--sp-h1: clamp(26px, 8.4vw, 36px);
+		/* 本文の段の高さ（上の余白・前置き・本文4〜5行・下の余白）。幅が狭いほど行が増えるので高くする */
+		--sp-sub: clamp(190px, calc(300px - 34vw), 215px);
+		/* 人物の段の高さ ＝ 画面の高さ −（上の余白・ラベル・見出し3行・すき間・本文の段）。低い画面でも220pxは確保 */
+		--sp-vis: max(220px, calc(100vh - 76px - 32px - var(--sp-h1) * 3.84 - 12px - var(--sp-sub)));
+	}
+	@supports (height: 100svh) {
+		:root {
+			--sp-vis: max(220px, calc(100svh - 76px - 32px - var(--sp-h1) * 3.84 - 12px - var(--sp-sub)));
+		}
+	}
+
+	.eyecatch3 {
+		min-height: 100vh;
+		min-height: 100svh;
+		padding: 76px 0 44px;
+		background: linear-gradient(180deg, #f2f7ff 0, #fff 380px);
+	}
+
+	/* 格子：1 ラベル / 2 見出し / 3 人物 / 4 本文（人物の下の方に重ねる）/ 5 3つの強み / 6 ボタン */
+	.eyecatch3 > .inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto auto var(--sp-vis) auto auto auto;
+		align-items: start;
+	}
+	.eyecatch3 .eye_in_2,
+	.eyecatch3 .eye_in_txt {
+		display: contents;
+	}
+	/* 箱のない要素の不透明度は描画に効かないが、どのブラウザでも確実に見えるよう、明示的に表示の状態にしておく。
+	   ラベル・見出し・本文は最初から表示され、人物と3つの強みとボタンは従来どおり画面に入ったときに表示される */
+	.eyecatch3 .eye_in_txt {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* ラベルと見出しは画面の中央にそろえる（ラベルは左右に短い線） */
+	.eyecatch3 .fv_lead {
+		grid-row: 1;
+		grid-column: 1;
+		text-align: center;
+	}
+	.eyecatch3 .fv_lead_in::before,
+	.eyecatch3 .fv_lead_in::after {
+		content: "";
+		flex: none;
+		width: 24px;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--fv-blue);
+	}
+	.eyecatch3 .fv_lead_in::before {
+		margin-right: 12px;
+	}
+	.eyecatch3 .fv_lead_in::after {
+		margin-left: 12px;
+	}
+	/* 幅の狭いスマホ（360px未満）では、ラベルが列からはみ出さないよう線を短くする */
+	@media ( max-width:359px ) {
+		.eyecatch3 .fv_lead_in::before,
+		.eyecatch3 .fv_lead_in::after {
+			width: 16px;
+		}
+		.eyecatch3 .fv_lead_in::before {
+			margin-right: 8px;
+		}
+		.eyecatch3 .fv_lead_in::after {
+			margin-left: 8px;
+		}
+	}
+	.eyecatch3 .fv_catch {
+		grid-row: 2;
+		grid-column: 1;
+		position: relative;
+		z-index: 2;
+		text-align: center;
+	}
+	.eyecatch3 .eye_img {
+		grid-row: 3 / 5;
+		grid-column: 1;
+		align-self: stretch;
+	}
+	.eyecatch3 .fv_sub {
+		grid-row: 4;
+		grid-column: 1;
+		align-self: end;
+	}
+	.eyecatch3 .eye_in_2 .fv_award {
+		grid-row: 5;
+		grid-column: 1;
+	}
+	.eyecatch3 .fv_cta {
+		grid-row: 6;
+		grid-column: 1;
+	}
+
+	/* 人物とコラージュの場所。左右は画面の端まで広げる。
+	   幅の広い画面ではコラージュが本文より下まで伸び、3つの強み（月桂樹）にかぶってぼやけて見えるので、
+	   この場所（本文の下端まで）の外は表示しない。切れ目は本文の白い背景の下に隠れる */
+	.eyecatch3 .eye_img {
+		position: relative;
+		z-index: 1;
+		width: auto;
+		height: auto;
+		margin: 12px calc(50% - 50vw) 0;
+		padding: 0;
+		overflow: hidden;
+		background: radial-gradient(56% 44% at 68% 46%, rgb(23 105 224 / 16%) 0%, rgb(23 105 224 / 0%) 72%);
+	}
+
+	/* 記事のコラージュ：人物の後ろに、枠なしで浮かべる */
+	.eyecatch3 .eye_img .sec {
+		position: absolute;
+		z-index: 0;
+		top: -2%;
+		right: auto;
+		bottom: auto;
+		left: -30%;
+		width: 156%;
+		margin: 0;
+	}
+	.eyecatch3 .eye_img .sec img {
+		display: block;
+		width: 100%;
+		height: auto;
+		-webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%);
+		mask-image: linear-gradient(180deg, transparent 0%, #000 14%);
+	}
+
+	/* 人物：段の下端に立たせ、右端に寄せる（写真の右側の透明な6.25%の分だけ右へずらし、腕の端を画面の端に合わせる） */
+	.eyecatch3 .eye_img .fir {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		width: auto;
+		margin: 0;
+	}
+	.eyecatch3 .eye_img .fir img {
+		flex: none;
+		width: auto;
+		max-width: none;
+		height: 100%;
+		max-height: 140vw;
+		transform: translateX(6.25%);
+	}
+
+	/* 本文：写真の下の方に、上の角を丸めた白いシートを重ね、その上に中央ぞろえで置く。
+	   人物の大きさは本文の箱の高さで決まるので、箱の高さは変えない
+	  （文字の大きさ・行の高さ・行数は同じ。上の余白30px＋見出しの下8px＋下の余白4px＝42px を 24＋14＋4 に配り直す） */
+	.eyecatch3 .fv_sub {
+		position: relative;
+		z-index: 3;
+		margin: 0;
+		padding: 24px 0 4px;
+		border: 0;
+		border-radius: 0;
+		background: none;
+		box-shadow: none;
+		text-align: center;
+	}
+	/* 白いシート：画面の端から端まで。上の角を丸め、写真の上にふわっと影を落とす */
+	.eyecatch3 .fv_sub::before {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		top: -6px;
+		right: calc(50% - 50vw);
+		bottom: 0;
+		left: calc(50% - 50vw);
+		border-radius: 28px 28px 0 0;
+		background: #fff;
+		box-shadow: 0 -14px 30px -18px rgb(13 43 78 / 30%);
+		pointer-events: none;
+	}
+	/* 見出し：中央に置き、下に短い青のグラデーションの線を引く */
+	.eyecatch3 .fv_sub .fv_sub_head {
+		position: relative;
+		margin-bottom: 14px;
+		padding-left: 0;
+		border-left: 0;
+		font-size: 17px;
+		line-height: 1.55;
+		letter-spacing: .04em;
+	}
+	.eyecatch3 .fv_sub .fv_sub_head::after {
+		content: "";
+		position: absolute;
+		bottom: -9px;
+		left: 50%;
+		width: 36px;
+		height: 3px;
+		margin-left: -18px;
+		border-radius: 3px;
+		background: linear-gradient(90deg, var(--fv-blue), #6fb0ff);
+	}
+	/* 本文：行の長さをそろえて（balance）、最後の行だけ短くならないようにする（行数は変わらない） */
+	.eyecatch3 .fv_sub p {
+		font-size: 15px;
+		line-height: 1.9;
+		text-wrap: balance;
+	}
+
+	/* 3つの強みとボタンは、淡い青の面（上の角を丸めた区画）にまとめ、中央にそろえる。
+	   面は格子の5〜6段目に置き、左右は画面の端まで、下は画面の下端まで伸ばす */
+	.eyecatch3 > .inner::before {
+		content: "";
+		grid-row: 5 / 7;
+		grid-column: 1;
+		align-self: stretch;
+		margin: 30px calc(50% - 50vw) -100vh;
+		border-radius: 28px 28px 0 0;
+		/* 最も濃い所でも、青い「ひとこと」と灰色の注記が背景と4.5:1以上の差になる明るさにする */
+		background: linear-gradient(180deg, #f2f6fd 0, #ecf3fd 420px);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 80%);
+		pointer-events: none;
+	}
+
+	/* 3つの強み（月桂樹） */
+	.eyecatch3 .eye_in_2 .fv_award {
+		position: relative;
+		width: 100%;
+		max-width: 330px;
+		margin: 62px auto 0;
+	}
+
+	/* ボタン：月桂樹の下に、同じ幅（最大340px）・同じ高さで中央にそろえる */
+	.eyecatch3 .fv_cta {
+		position: relative;
+		z-index: 3;
+		margin-top: 30px;
+		padding: 0 0 6px;
+	}
+	.fv_cta_btns {
+		align-items: center;
+		gap: 12px;
+	}
+	.fv_cta_main {
+		width: 100%;
+		max-width: 340px;
+	}
+	.fv_cta_micro {
+		margin-bottom: 10px;
+		font-size: 13px;
+	}
+	.fv_btn {
+		height: 56px;
+		padding: 0 24px;
+	}
+	.fv_btn--main {
+		width: 100%;
+		min-width: 0;
+		font-size: 16px;
+		box-shadow: 0 14px 28px -14px rgb(176 134 41 / 70%);
+	}
+	/* 白いボタンは枠線をやめ、白地に柔らかい影で浮かせる */
+	.fv_btn--sub {
+		width: 100%;
+		max-width: 340px;
+		min-width: 0;
+		height: 56px;
+		border-color: #fff;
+		background: #fff;
+		box-shadow: 0 10px 24px -14px rgb(13 43 78 / 35%);
+		font-size: 15px;
+	}
+	.fv_cta_note {
+		margin-top: 18px;
+		font-size: 12px;
+	}
+
+}
+
+/* 幅の広いスマホ・小さなタブレット（540〜760px、縦向き）：見出しをひと回り大きく、ボタンは横に並べる
+----------------------------------------------------------- */
+
+@media screen and ( min-width:540px ) and ( max-width:760px ) and ( orientation:portrait ) {
+
+	:root {
+		--sp-h1: clamp(34px, 5.8vw, 40px);
+		/* 幅が広く本文の行が減るので、本文の段は低くなる */
+		--sp-sub: 160px;
+	}
+
+	.fv_cta_btns {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: center;
+		gap: 12px;
+	}
+	/* 2つのボタンは必ず同じ幅（それぞれ全体の半分、最大260px）にする。
+	   残りの幅の等分（flex-basis: 0）だと、内側の余白がある白いボタンの方が広くなるため、半分を基準にする。
+	   ボタンの間は16px（スマホのボタンの指定）なので、半分から8pxずつ引く */
+	.fv_cta_main,
+	.fv_btn--sub {
+		flex: 0 1 calc(50% - 8px);
+		min-width: 0;
+		max-width: 260px;
+	}
+	/* ボタンが横に並ぶと、ゴールドのボタンの影が注記の真上に来るので、注記を少し離す */
+	.fv_cta_note {
+		margin-top: 28px;
+		font-size: 12px;
+	}
+
+}
+
+/* スマホの横向き：高さが低いので詰めて組み、ボタンを横に並べて最初の画面に入れる
+----------------------------------------------------------- */
+
+@media screen and ( max-width:760px ) and ( orientation:landscape ) {
+
+	.header_bg .inner.fv_header {
+		height: 52px;
+	}
+	.brand_logo img {
+		height: 34px;
+	}
+
+	.eyecatch3 {
+		padding-top: 58px;
+	}
+
+	.fv_lead {
+		margin-bottom: 8px;
+	}
+	.fv_lead_in {
+		font-size: 12px;
+	}
+
+	h1.fv_catch {
+		font-size: clamp(22px, 7vh, 26px);
+		line-height: 1.25;
+	}
+
+	.fv_sub {
+		margin-top: 8px;
+		padding: 10px 14px;
+		border-radius: 12px;
+	}
+	.fv_sub p {
+		font-size: 12.5px;
+		line-height: 1.65;
+	}
+	.fv_sub .fv_sub_head {
+		margin-bottom: 2px;
+		font-size: 14px;
+	}
+
+	.fv_cta {
+		margin-top: 12px;
+	}
+	.fv_cta_micro {
+		margin-bottom: 6px;
+		font-size: 12px;
+	}
+	.fv_cta_btns {
+		flex-direction: row;
+		align-items: flex-end;
+		gap: 10px;
+	}
+	.fv_cta_main {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+	.fv_btn {
+		height: 48px;
+		padding: 0 16px;
+		gap: 8px;
+	}
+	.fv_btn--main {
+		min-width: 0;
+		font-size: 15px;
+	}
+	.fv_btn--sub {
+		flex: 1 1 0;
+		min-width: 0;
+		height: 48px;
+		font-size: 14px;
+	}
+	.fv_cta_note {
+		margin-top: 8px;
+	}
+
+	/* 縦向きと同じく、ボタンは3つの強み（月桂樹）の下に置く */
+	.eyecatch3 .eye_in_2 .fv_award {
+		order: 2;
+		max-width: 340px;
+		margin-top: 16px;
+	}
+	.eyecatch3 .fv_cta {
+		order: 3;
+		margin-top: 16px;
+	}
+
+	/* 写真は最後に、角の丸いパネルに収める（記事のコラージュを背景に、人物を右に） */
+	.eyecatch3 {
+		padding-bottom: 40px;
+		background: linear-gradient(180deg, #fff 0%, #f5f9ff 45%, #eaf2fe 100%);
+	}
+	.eyecatch3 .eye_img {
+		position: relative;
+		width: 100%;
+		height: clamp(200px, 40vw, 300px);
+		margin-top: 24px;
+		padding: 0;
+		overflow: hidden;
+		border-radius: 22px;
+		clip-path: inset(0 round 22px);
+		background:
+			radial-gradient(75% 85% at 80% 20%, #fff 0%, rgb(255 255 255 / 0%) 70%),
+			linear-gradient(155deg, #eef5ff 0%, #dbe9fd 55%, #c6dcfb 100%);
+	}
+	.eyecatch3 .eye_img .sec {
+		position: absolute;
+		top: -34%;
+		right: auto;
+		bottom: auto;
+		left: -10%;
+		width: 132%;
+		margin: 0;
+	}
+	.eyecatch3 .eye_img .sec img {
+		display: block;
+		width: 100%;
+		height: auto;
+		-webkit-mask-image: none;
+		mask-image: none;
+	}
+	.eyecatch3 .eye_img .fir {
+		position: absolute;
+		top: 7%;
+		right: -1%;
+		bottom: auto;
+		left: auto;
+		width: 57%;
+		margin: 0;
+	}
+
+}
+
+/* さらに低い画面（高さ380px以下）：余白と文字をもう一段詰める */
+@media screen and ( max-width:760px ) and ( max-height:380px ) {
+
+	.header_bg .inner.fv_header {
+		height: 48px;
+	}
+	.brand_logo img {
+		height: 32px;
+	}
+	.fv_header_btn {
+		height: 32px;
+		font-size: 12px;
+	}
+
+	.eyecatch3 {
+		padding-top: 52px;
+	}
+	.fv_lead {
+		margin-bottom: 4px;
+	}
+	.fv_lead_in {
+		font-size: 11.5px;
+	}
+	h1.fv_catch {
+		font-size: clamp(19px, 6.2vh, 23px);
+		line-height: 1.22;
+	}
+	.fv_sub {
+		margin-top: 6px;
+		padding: 7px 12px;
+	}
+	.fv_sub p {
+		font-size: 12px;
+		line-height: 1.55;
+	}
+	.fv_sub .fv_sub_head {
+		margin-bottom: 0;
+		font-size: 13px;
+	}
+	.fv_cta {
+		margin-top: 8px;
+	}
+	.fv_cta_micro {
+		margin-bottom: 4px;
+		font-size: 11.5px;
+	}
+	.fv_btn,
+	.fv_btn--sub {
+		height: 42px;
+	}
+	.fv_btn--main {
+		font-size: 14px;
+	}
+	.fv_btn--sub {
+		font-size: 13px;
+	}
+
+}
+
+/* ボタン（PC・タブレット・スマホ共通）：ころんと丸く、押したくなるボタン
+   ・下に厚み（押すと沈む）、上にうっすらツヤ。ゴールドのボタンには、ときどき光が流れる
+   ・左に小さなアイコン（相談＝吹き出し、資料＝書類）、右に丸いチップに入った矢印
+   ボタンの高さと文字の大きさは、画面ごとの指定を引き継ぐ（スマホの縦向きだけ58pxにそろえる）。
+   チップの大きさはボタンの高さに合わせる
+----------------------------------------------------------- */
+
+@keyframes fvShine {
+	0% {
+		background-position: -150% 0, 0 0;
+	}
+	22%,
+	100% {
+		background-position: 250% 0, 0 0;
+	}
+}
+
+.eyecatch3 .fv_btn {
+	--chip: 38px;
+	justify-content: center;
+	gap: 8px;
+	padding: 0 calc(var(--chip) + 16px) 0 20px;
+	letter-spacing: .05em;
+	transition: transform .15s var(--fv-ease), box-shadow .15s var(--fv-ease), border-color .25s var(--fv-ease), color .25s var(--fv-ease);
+	-webkit-tap-highlight-color: transparent;
+}
+/* 左のアイコン（文字と同じ色） */
+.eyecatch3 .fv_btn::before {
+	content: "";
+	flex: none;
+	width: 19px;
+	height: 19px;
+	background: currentColor;
+	-webkit-mask: var(--fv-icon) center / contain no-repeat;
+	mask: var(--fv-icon) center / contain no-repeat;
+}
+/* 右の丸いチップと矢印 */
+.eyecatch3 .fv_btn::after {
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	width: var(--chip);
+	height: var(--chip);
+	margin-top: calc(var(--chip) / -2);
+	border-radius: 50%;
+	background: var(--fv-chip-bg) var(--fv-chip-arrow) center / 46% no-repeat;
+	-webkit-mask: none;
+	mask: none;
+}
+
+/* 相談のボタン：ゴールド。文字は白のまま、うっすら影をつけて読みやすくする */
+.eyecatch3 .fv_btn--main {
+	--fv-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.5c0 4.4-3.8 8-8.5 8-1.3 0-2.6-.3-3.7-.8L4 20l1.2-3.7a7.7 7.7 0 0 1-1.7-4.8c0-4.4 3.8-8 8.5-8s8.5 3.6 8.5 8z'/%3E%3Ccircle cx='8.4' cy='11.6' r='1.1' fill='%23000' stroke='none'/%3E%3Ccircle cx='12' cy='11.6' r='1.1' fill='%23000' stroke='none'/%3E%3Ccircle cx='15.6' cy='11.6' r='1.1' fill='%23000' stroke='none'/%3E%3C/svg%3E");
+	--fv-chip-bg: #fff;
+	--fv-chip-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a7420' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+	border-color: #c99e45;
+	background:
+		linear-gradient(110deg, rgb(255 255 255 / 0%) 35%, rgb(255 255 255 / 50%) 50%, rgb(255 255 255 / 0%) 65%) -150% 0 / 60% 100% no-repeat,
+		linear-gradient(180deg, rgb(255 255 255 / 20%) 0%, rgb(255 255 255 / 0%) 48%) 0 0 / 100% 100% no-repeat,
+		var(--fv-gold);
+	box-shadow: 0 4px 0 #b88f35, 0 14px 22px -12px rgb(176 134 41 / 70%);
+	text-shadow: 0 1px 2px rgb(110 78 10 / 35%);
+	animation: fvShine 4.5s 1.2s var(--fv-ease) infinite;
+}
+.eyecatch3 .fv_btn--main:hover {
+	border-color: #c99e45;
+	background:
+		linear-gradient(110deg, rgb(255 255 255 / 0%) 35%, rgb(255 255 255 / 50%) 50%, rgb(255 255 255 / 0%) 65%) -150% 0 / 60% 100% no-repeat,
+		linear-gradient(180deg, rgb(255 255 255 / 20%) 0%, rgb(255 255 255 / 0%) 48%) 0 0 / 100% 100% no-repeat,
+		var(--fv-gold-hover);
+	box-shadow: 0 4px 0 #b88f35, 0 14px 22px -12px rgb(176 134 41 / 70%);
+}
+.eyecatch3 .fv_btn--main:active {
+	transform: translateY(3px);
+	box-shadow: 0 1px 0 #b88f35, 0 6px 12px -8px rgb(176 134 41 / 70%);
+}
+
+/* 資料のボタン：白。枠と厚みは淡い青、矢印は青いチップ */
+.eyecatch3 .fv_btn--sub {
+	--fv-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h4'/%3E%3C/svg%3E");
+	--fv-chip-bg: #e6f0fe;
+	--fv-chip-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231769e0' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+	border-color: #d6e3f5;
+	background: #fff;
+	box-shadow: 0 4px 0 #d3e0f2, 0 12px 22px -14px rgb(13 43 78 / 35%);
+}
+.eyecatch3 .fv_btn--sub:hover {
+	border-color: #b9cff0;
+	box-shadow: 0 4px 0 #d3e0f2, 0 12px 22px -14px rgb(13 43 78 / 35%);
+}
+.eyecatch3 .fv_btn--sub:active {
+	transform: translateY(3px);
+	box-shadow: 0 1px 0 #d3e0f2, 0 6px 12px -10px rgb(13 43 78 / 35%);
+}
+
+/* PC・タブレット：チップの大きさをボタンの高さに合わせる（ボタンの高さ − 20px）。
+   ゴールドのボタンの影が注記にかからないよう、注記を少し離す */
+@media screen and ( min-width:761px ) {
+	.eyecatch3 .fv_btn {
+		--chip: calc(var(--fv-btn-h, 62px) - 20px);
+	}
+	.eyecatch3 .fv_cta_note {
+		margin-top: 24px;
+	}
+}
+
+/* 縦向き：2つのボタンを同じ高さ（58px）にし、厚みの分だけ間を広げる */
+@media screen and ( max-width:760px ) and ( orientation:portrait ) {
+	.eyecatch3 .fv_cta_btns {
+		gap: 16px;
+	}
+	.eyecatch3 .fv_btn,
+	.eyecatch3 .fv_btn--sub {
+		height: 58px;
+	}
+	.eyecatch3 .fv_btn--main {
+		font-size: 16.5px;
+	}
+	.eyecatch3 .fv_btn--sub {
+		font-size: 15px;
+	}
+}
+
+/* 横向き：ボタンが低いので、チップとアイコンを小さくする */
+@media screen and ( max-width:760px ) and ( orientation:landscape ) {
+	.eyecatch3 .fv_btn {
+		--chip: 32px;
+		padding: 0 calc(var(--chip) + 14px) 0 14px;
+	}
+	.eyecatch3 .fv_btn::before {
+		width: 17px;
+		height: 17px;
+	}
+	.eyecatch3 .fv_btn::after {
+		right: 7px;
+	}
+}
+@media screen and ( max-width:760px ) and ( max-height:380px ) {
+	.eyecatch3 .fv_btn {
+		--chip: 28px;
+	}
+}
+
+/* タッチの画面では、タップしたあとにボタンが浮いたまま残らないようにする */
+@media (hover: none) {
+	.fv_btn:hover,
+	.fv_btn--main:hover,
+	.fv_btn--sub:hover {
+		transform: none;
+	}
+	.fv_btn:hover::after {
+		transform: none;
+	}
+}
+
+/* JSが動かない環境でも中身を見せる */
+@media (scripting: none) {
+	.eyecatch3 .fade,
+	.eyecatch3 .fade_down,
+	.eyecatch3 .fade_right {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eyecatch3 .fade,
+	.eyecatch3 .fade_down,
+	.eyecatch3 .fade_right {
+		transition: none;
+		transform: none;
+	}
+	.fv_btn,
+	.fv_btn::after,
+	.fv_header_btn {
+		transition: none;
+	}
+	.eyecatch3 .fv_btn--main {
+		animation: none;
+	}
+}

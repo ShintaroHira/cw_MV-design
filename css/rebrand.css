@@ -68,41 +68,74 @@
 	white-space: nowrap;
 }
 
+/* ヘッダーのボタン：シンプルで、かわいく
+   ・枠も厚みもない、やわらかい色のまるいボタン。文字の前に小さな線のアイコンを1つだけ（資料＝ダウンロード、相談＝吹き出し）
+   ・資料は淡い青に青い文字、相談はゴールドに白い文字
+   ・ホバーすると少しだけ浮き、押すとふにっと小さくなる
+   ・大きさはボタンの高さ（--hb）から決める。画面ごとの指定は --hb と文字の大きさだけ
+----------------------------------------------------------- */
+
 .fv_header_cta {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 }
 .fv_header_btn {
+	--hb: 44px;
+	--fv-hdr-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.5c0 4.4-3.8 8-8.5 8-1.3 0-2.6-.3-3.7-.8L4 20l1.2-3.7a7.7 7.7 0 0 1-1.7-4.8c0-4.4 3.8-8 8.5-8s8.5 3.6 8.5 8z'/%3E%3C/svg%3E");
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 44px;
-	padding: 0 24px;
-	border: 1px solid var(--fv-gold);
+	gap: .5em;
+	height: var(--hb);
+	padding: 0 calc(var(--hb) * .5) 0 calc(var(--hb) * .42);
 	border-radius: 999px;
 	background: var(--fv-gold);
-	box-shadow: 0 6px 16px -8px rgb(176 134 41 / 50%);
+	box-shadow: 0 8px 16px -10px rgb(176 134 41 / 75%);
 	font-size: 14px;
 	font-weight: 700;
+	line-height: 1;
 	letter-spacing: .06em;
+	white-space: nowrap;
 	color: #fff !important;
-	transition: background-color .25s var(--fv-ease), border-color .25s var(--fv-ease), color .25s var(--fv-ease);
+	transition: transform .2s var(--fv-ease), box-shadow .25s var(--fv-ease), background-color .25s var(--fv-ease);
+	-webkit-tap-highlight-color: transparent;
+}
+/* 文字の前の小さなアイコン（文字と同じ色） */
+.fv_header_btn::before {
+	content: "";
+	flex: none;
+	width: 1.15em;
+	height: 1.15em;
+	background: currentColor;
+	-webkit-mask: var(--fv-hdr-icon) center / contain no-repeat;
+	mask: var(--fv-hdr-icon) center / contain no-repeat;
 }
 .fv_header_btn:hover {
-	border-color: var(--fv-gold-hover);
-	background: var(--fv-gold-hover);
+	background-color: var(--fv-gold-hover);
+	box-shadow: 0 10px 18px -10px rgb(176 134 41 / 85%);
+	transform: translateY(-1px);
 }
+.fv_header_btn:active {
+	box-shadow: 0 6px 12px -10px rgb(176 134 41 / 75%);
+	transform: scale(.96);
+	transition-duration: .1s;
+}
+
+/* 資料のボタン：淡い青に青い文字。影はつけず、相談のボタンより一歩ひかえめに */
 .fv_header_btn--sub {
-	border-color: var(--fv-line);
-	background: #fff;
+	--fv-hdr-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v10.5M7.5 9.5 12 14l4.5-4.5M4.5 15v2.5a2.5 2.5 0 0 0 2.5 2.5h10a2.5 2.5 0 0 0 2.5-2.5V15'/%3E%3C/svg%3E");
+	background: #e9f2fe;
 	box-shadow: none;
-	color: var(--fv-navy) !important;
+	/* ブランドの青（#1769e0）をほんの少し深くして、淡い青の地でも読みやすくする（コントラスト 5.2:1、ホバー時 4.8:1） */
+	color: #155fcf !important;
 }
 .fv_header_btn--sub:hover {
-	border-color: var(--fv-blue);
-	background: #fff;
-	color: var(--fv-blue) !important;
+	background-color: #dce9fd;
+	box-shadow: none;
+}
+.fv_header_btn--sub:active {
+	box-shadow: none;
 }
 
 /* FV コピー
@@ -379,11 +412,18 @@
 		display: none;
 	}
 	.fv_header_btn {
-		height: 36px;
-		padding: 0 16px;
+		--hb: 36px;
 		font-size: 12.5px;
 	}
 
+}
+
+/* 幅の狭いスマホ（360px未満）：ロゴとのあいだにゆとりを残すため、ボタンの右の余白と字間を少し詰める */
+@media screen and ( max-width:359px ) {
+	.fv_header_btn {
+		padding-right: calc(var(--hb) * .4);
+		letter-spacing: .03em;
+	}
 }
 
 /* 縦に積むレイアウト（スマホと、縦向きのタブレット）
@@ -1149,7 +1189,7 @@
 		height: 32px;
 	}
 	.fv_header_btn {
-		height: 32px;
+		--hb: 32px;
 		font-size: 12px;
 	}
 
@@ -1350,6 +1390,16 @@
 	}
 	.fv_btn:hover::after {
 		transform: none;
+	}
+	/* ヘッダーのボタン：タップのあと浮いたまま・色が変わったまま残らないようにする（押している間の動きは残す） */
+	.fv_header_btn:hover:not(:active) {
+		background-color: var(--fv-gold);
+		box-shadow: 0 8px 16px -10px rgb(176 134 41 / 75%);
+		transform: none;
+	}
+	.fv_header_btn--sub:hover:not(:active) {
+		background-color: #e9f2fe;
+		box-shadow: none;
 	}
 }
 

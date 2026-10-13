@@ -2,10 +2,11 @@
 
 /* FVを画面いっぱいに表示（PC・横向きのタブレット）
    文字と余白は画面の高さに合わせてなめらかに縮め、低い画面でもボタンを最初の画面に入れる。
-   縦向きのタブレットは縦に積むレイアウト（rebrand.css）にするので、ここでは扱わない
+   幅 761〜1279px の縦向きにもこの土台をかけ、その上で、タブレットの大きさの画面（幅 600〜1023px と、幅 1279px までの縦向き）は
+   このファイルの最後で「見出しを上・左右2等分・ボタンを下」の組み方に組み直す
 ----------------------------------------------------------- */
 
-@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ) {
+@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ), screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
 
 	:root {
 		--fv-hdr: clamp(68px, 10vh, 88px);
@@ -21,13 +22,9 @@
 		--fv-photo-h: clamp(420px, calc(100vh * .8 - 20px), 860px);
 		--fv-wrap: min(1200px, 80%);
 		--fv-col: 560px;
-		/* 人物の見えている左端と、文字の列の右端とのすき間 */
+		/* 人物の見えている左端と、文字の列の右端とのすき間（ふだん）と、狭い画面でも空ける最小のすき間 */
 		--fv-man-gap: 120px;
-		/* 人物の写真の幅（高さ × 2/3。写真の縦横比 1024×1536） */
-		--fv-man-w: calc(var(--fv-photo-h) * 2 / 3);
-		/* 実際の写真の幅（列より広いときは列の幅）と、写真の左のずれ。人物の後ろの円や浮かぶカードもこの値で人物に合わせる */
-		--fv-man-d: min(var(--fv-man-w), 100%);
-		--fv-man-l: min(calc(var(--fv-man-gap) - var(--fv-man-d) * .1895), calc(100% - var(--fv-man-d)));
+		--fv-man-gapmin: 64px;
 	}
 	@supports (height: 100svh) {
 		:root {
@@ -73,8 +70,34 @@
 	}
 
 	/* 右の列：人物は下端に立たせ、文字の列から一定のすき間（--fv-man-gap）をあけて置く。
-	   ただし右端はコンテンツの右端（ヘッダーのボタンの右端と同じ線）より外には出さない。
-	   列より写真が広いときは縦横比を保ったまま縮める。記事のコラージュは右端まで色のまま見せる */
+	   ただし右端はコンテンツの右端（ヘッダーのボタンの右端と同じ線）より外には出さない。記事のコラージュは右端まで色のまま見せる
+
+	   人物の写真（fv_main.png）は縦長 1024×1536。人物（書類の端まで）は、横は写真の幅の 10.25%〜96%、縦は高さの 4.17%〜下端。
+	   ・--fv-man-h：写真の高さ。人物の頭の高さを、前の写真（頭が高さの1.37%から）のときと同じにする（＝写真の枠の高さ × 1.0292）。
+	     ただし右の列の幅に、人物の幅（写真の高さ × 0.5717）と最小のすき間（--fv-man-gapmin）が収まらないときは、収まる大きさまで縮める
+	   ・--fv-man-W：写真の幅（高さ × 2/3）
+	   ・--fv-man-l：写真の左端の位置。人物の左端を「文字の列の右端 + すき間」に置き、右端が列の右端を越えるときは右端にそろえる
+	   ・--fv-man-room：右の列の幅。人物の写真では列の幅そのもの（100cqw）、列の背景（人物の後ろの光）では画面の幅から求めた値を使う */
+	.eyecatch3 .eye_img,
+	.eyecatch3 .eye_img .fir {
+		--fv-man-h: min(calc(var(--fv-photo-h) * 1.0292), calc((var(--fv-man-room) - var(--fv-man-gapmin)) / .5717));
+		--fv-man-W: calc(var(--fv-man-h) * 2 / 3);
+		--fv-man-l: min(calc(var(--fv-man-gap) - var(--fv-man-W) * .1025), calc(100% - var(--fv-man-W) * .96));
+	}
+	.eyecatch3 .eye_img {
+		--fv-man-room: calc(100vw - var(--fv-margin, 10vw) * 2 - var(--fv-col));
+	}
+	.eyecatch3 .eye_img .fir {
+		--fv-man-room: calc(100vw - var(--fv-margin, 10vw) * 2 - var(--fv-col));
+	}
+	@supports (width: 1cqw) {
+		.eyecatch3 .eye_img {
+			container-type: inline-size;
+		}
+		.eyecatch3 .eye_img .fir {
+			--fv-man-room: 100cqw;
+		}
+	}
 	.eyecatch3 .eye_img {
 		align-self: stretch;
 		flex: 1 1 auto;
@@ -91,19 +114,16 @@
 		width: auto;
 		margin: 0;
 	}
-	/* 写真（fv_main.png）は左側の12.7%と右側の6.25%が透明。右へ6.25%ずらすので、見えている人物は
-	   「写真の左端 + 幅の18.95%」から「写真の左端 + 幅」まで。
-	   左のずれ（margin-left）＝ すき間 − 幅 × 18.95%（人物の左端を、文字の列の右端 + すき間 に置く）。
-	   ただし「列の幅 − 写真の幅」より大きくはしない（＝右端がコンテンツの右端を越えるときは、右端にそろえる） */
+	/* 写真の右側の透明な部分（4%）は列の外にはみ出す。クリックやタップは写真では受けない（rebrand.css の pointer-events: none） */
 	.eyecatch3 .eye_img .fir img {
 		display: block;
-		width: var(--fv-man-d);
+		width: var(--fv-man-W);
 		max-width: none;
-		height: var(--fv-photo-h);
+		height: var(--fv-man-h);
 		margin-left: var(--fv-man-l);
 		object-fit: contain;
 		object-position: 100% 100%;
-		transform: translateX(6.25%);
+		transform: none;
 	}
 	/* コラージュは文字の列の右から始め、幅は右側の空きに合わせる（文字に重ならない）。
 	   幅 = コンテンツの右端までの幅 − 文字の列 + 216px（画面の右へはみ出す分）。高さはヘッダーの下に収まる分まで */
@@ -134,10 +154,10 @@
    ・文字の列の幅（56）と、人物と文字の列とのすき間（17）も文字と同じ単位（--fv-s）なので、人物と文字の比率はどの画面でも同じ
    ・文字・ボタンの大きさは --fv-s（rem と 画面の高さ÷90 のうち小さい方。下限は7.11px）で決め、高さの低い画面では高さに合わせて縮める
      （1440×900 では rem と同じ 10px）
-   スマホ（760px以下）と縦向きのタブレットは対象外（px のまま）
+   スマホ（760px以下）は対象外（px のまま）。タブレットの大きさの画面は、このファイルの最後の組み方で決め直す
 ----------------------------------------------------------- */
 
-@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ) {
+@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ), screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
 
 	html {
 		font-size: clamp(7.1112px, calc(100vw / 144), 13.3333px);
@@ -149,6 +169,9 @@
 		--fv-margin: clamp(10vw, calc((100vw - var(--fv-s) * 115.2) / 2), max(14vw, calc((100vw - 115.2rem) / 2)));
 		/* 人物と文字の列とのすき間、文字の列の幅：文字と同じ --fv-s で決めるので、人物と文字の比率はどの画面でも同じ */
 		--fv-man-gap: calc(var(--fv-s) * 17);
+		/* 最小のすき間：ふだんは 9（1440pxで90px）。幅の狭い画面では、人物が小さくなりすぎないよう 32px まで詰める
+		  （これまでの写真のときの下限 30px に、端数の丸めの分の余裕を足す） */
+		--fv-man-gapmin: clamp(32px, calc((100vw - 900px) * .3), calc(var(--fv-s) * 9));
 		--fv-wrap: calc(100% - var(--fv-margin) * 2);
 		--fv-col: calc(var(--fv-s) * 56);
 		--fv-hdr: min(8.8rem, max(68px, 10vh));
@@ -156,8 +179,9 @@
 		--fv-gap: min(3rem, max(12px, 2.5vh));
 		--fv-gap-s: min(2.2rem, max(10px, 2.2vh));
 		--fv-h1: clamp(30px, min(5.8rem, 6.2vh), 5.8rem);
-		--fv-lead: min(1.8rem, max(15px, 2.1vh));
-		--fv-body: min(1.55rem, max(13.5px, 1.75vh));
+		/* 前置き・本文：幅に比例して縮めるが、15px・13.5px より小さくはしない（幅1024px前後でも読みやすく） */
+		--fv-lead: max(15px, min(1.8rem, 2.1vh));
+		--fv-body: max(13.5px, min(1.55rem, 1.75vh));
 		--fv-award-w: min(44rem, max(260px, 42vh));
 		--fv-btn-h: min(6.2rem, max(50px, 7vh));
 		/* 人物の高さ：上限は文字と同じ単位（70 × --fv-s。1440×900で700px）。大きな画面でも人物だけが大きくならない */
@@ -170,16 +194,21 @@
 		}
 	}
 
+	/* メインキャッチ：3行目「は、もう読まれない。」を、「ツギハギ記事」の右端（」の字面の端）にそろえて右寄せにする。
+	   1行目は左端（「の字面の端）、3行目は右端にそろえ、大きな言葉を左上と右下からはさむ組み方にする。
+	   幅＝「ツギハギ記事」の字面の幅（6.75字分 × 大きさの比）＋ 句点「。」の右の空き（0.11字）と字間（0.06字） */
+	.eyecatch3 .fv_catch > span:nth-child(3) {
+		width: calc(var(--fv-catch-k) * 6.75em + .17em);
+		text-align: right;
+	}
+
 	/* ヘッダー */
 	.brand_logo img {
 		height: min(5.6rem, max(46px, 6.2vh));
 	}
-	.fv_header_cta {
-		gap: 1rem;
-	}
 	.fv_header_btn {
-		--hb: max(36px, 4.4rem);
-		font-size: max(12px, 1.4rem);
+		--hb: max(32px, 3.6rem);
+		font-size: max(12px, 1.3rem);
 	}
 
 	/* ラベルと本文 */
@@ -247,6 +276,53 @@
 	}
 }
 
+/* 幅1440px〜1024px：文字と人物のあいだ（見えているすき間）を、rem に比例させて縮める
+   ・見えているすき間 ＝ 文字の右端（いちばん右まで伸びるボタンの列の右端）から、人物の見えている左端まで
+   ・幅1440pxでは、これまでと同じすき間（その画面の高さのときの値）。そこから画面の幅に比例して狭くする
+     （すき間 ＝ 1440pxのときのすき間 × 1rem ÷ 10px。1440pxで 1rem = 10px なので、1024pxでは 0.711倍）
+   ・人物は、文字の列の右端から置くので、列の右端と文字の右端の差（ボタンの列の右の空き）を引いて置く
+   ・すき間は狭めない。人物が右の線（ヘッダーのボタンの右端）を越えそうなときは、人物の方を少し小さくする
+   ・1440px以上の画面と、1024px未満の画面は、これまでどおり（1440pxでは、この計算の値とこれまでの値は同じ。1440px未満にだけかける）
+
+   文字の右端（--fv-end。文字の列の左端から）＝ ボタンの列の右端 ＝ 相談のボタン（幅 28）＋ すき間（1.4）＋ 資料のボタン
+   （左の余白 2 ＋ アイコン 1.9 ＋ すき間 0.8 ＋ 文字「サービス資料を見る」9字 × 1.05（字間 0.05字）＋ 右の丸（ボタンの高さ − 2）＋ 右の余白 1.6 ＋ 枠 1px × 2）。
+   ただし列より広くなるときは、ボタンが縮んで列に収まるので、列の幅まで。
+   数字は --fv-s の倍数。ボタンの大きさを変えるときは、ここも合わせて直す */
+@supports (width: calc(tan(atan2(1px, 1px)) * 1px)) {
+	@media screen and ( min-width:1024px ) and ( max-width:1439.98px ) and ( orientation:landscape ), screen and ( min-width:1280px ) and ( max-width:1439.98px ) {
+		:root {
+			/* 1440pxのときの --fv-s・ボタンの高さ・文字の列の幅・文字の右端（いまの画面の高さで） */
+			--fv-s0: max(7.1112px, min(10px, calc(100vh / 90)));
+			--fv-btn-h0: min(62px, max(50px, 7vh));
+			--fv-col0: max(calc(var(--fv-s0) * 56), 432px);
+			--fv-end0: min(var(--fv-col0), calc(var(--fv-s0) * 33.7 + var(--fv-btn-h0) + max(13px, var(--fv-s0) * 1.5) * 9.45 + 2px));
+			/* いまの画面の文字の右端 */
+			--fv-end: min(var(--fv-col), calc(var(--fv-s) * 33.7 + var(--fv-btn-h) + max(13px, var(--fv-s) * 1.5) * 9.45 + 2px));
+			/* 1440pxのときの、見えているすき間（これまでの値：列の右端から 17 ＋ ボタンの列の右の空き） */
+			--fv-see0: calc(var(--fv-s0) * 17 + var(--fv-col0) - var(--fv-end0));
+			/* 見えているすき間を rem に比例させ（× 1rem ÷ 10px）、列の右端からの位置に直す */
+			--fv-man-gap: calc(var(--fv-see0) * tan(atan2(1rem, 10px)) - (var(--fv-col) - var(--fv-end)));
+		}
+		@supports (height: 100svh) {
+			:root {
+				--fv-s0: max(7.1112px, min(10px, calc(100svh / 90)));
+			}
+		}
+		/* すき間は狭めず、収まらないときは人物を小さくする */
+		.eyecatch3 .eye_img,
+		.eyecatch3 .eye_img .fir {
+			--fv-man-h: min(calc(var(--fv-photo-h) * 1.0292), calc((var(--fv-man-room) - var(--fv-man-gap)) / .5717));
+		}
+	}
+	/* 高さの低い画面（560px以下）：ボタンは文字の列の幅いっぱいに広がるので、文字の右端は列の右端 */
+	@media screen and ( min-width:1024px ) and ( max-width:1439.98px ) and ( max-height:560px ) and ( orientation:landscape ) {
+		:root {
+			--fv-end0: var(--fv-col0);
+			--fv-end: var(--fv-col);
+		}
+	}
+}
+
 /* 幅1023px以下の2列：文字の列が狭く（1rem の下限で約400px）、読みやすい大きさのボタンが横に2つ並ばないので、縦に並べる
   （相談のボタンの位置は変わらないので、最初の画面に入ったまま）
 ----------------------------------------------------------- */
@@ -290,8 +366,8 @@
 		height: 38px;
 	}
 	.fv_header_btn {
-		--hb: 36px;
-		font-size: 12.5px;
+		--hb: 32px;
+		font-size: 12px;
 	}
 
 	.eyecatch3 .eye_in_2 {
@@ -407,7 +483,7 @@
 
 /* ---------- PC・横向きのタブレット（2列） ---------- */
 
-@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ) {
+@media screen and ( min-width:1280px ), screen and ( min-width:761px ) and ( orientation:landscape ), screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
 
 	/* 背景：右上と下にごく淡い光 */
 	.eyecatch3 {
@@ -417,32 +493,16 @@
 			linear-gradient(180deg, #fff 0%, #f7faff 100%);
 	}
 
-	/* 人物の後ろの、ふちのない淡い水色の光。人物の位置（--fv-man-l・--fv-man-d）に合わせて、いつも人物の中心に置く
-	  （人物の見えている範囲の中心 ＝ 写真の左端 + 幅の59.5%）。
-	   光の大きさは長さだけの --fv-man-w で決める（Chrome は、円の大きさの min() の中の % を受け付けないため） */
+	/* 人物の後ろの、ふちのない淡い水色の光。人物の位置（--fv-man-l・--fv-man-W）に合わせて、いつも人物の頭と胸の中心に置く
+	  （写真の左端 + 幅の48%。頭の中心は43%、胸は51%）。大きさはこれまでと同じ割合（写真の高さの 0.4倍 × 0.51倍）。
+	   光の大きさは長さだけの --fv-man-h で決める（Chrome は、円の大きさの min() の中の % を受け付けないため） */
 	.eyecatch3 .eye_img {
-		background: radial-gradient(calc(var(--fv-man-w) * .62) calc(var(--fv-man-w) * .8) at calc(var(--fv-man-l) + var(--fv-man-d) * .595) 48%, rgb(206 228 255 / 85%) 0%, rgb(206 228 255 / 0%) 100%) no-repeat;
+		background: radial-gradient(calc(var(--fv-man-h) * .4) calc(var(--fv-man-h) * .51) at calc(var(--fv-man-l) + var(--fv-man-W) * .48) 48%, rgb(206 228 255 / 85%) 0%, rgb(206 228 255 / 0%) 100%) no-repeat;
 	}
 
 	/* 人物：やわらかい影で、背景から少し浮かせる */
 	.eyecatch3 .eye_img .fir img {
 		filter: drop-shadow(0 28px 36px rgb(13 43 78 / 14%));
-	}
-
-}
-
-/* ---------- 縦向きのタブレット（縦に積む） ---------- */
-
-@media screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
-
-	.eyecatch3 {
-		background:
-			radial-gradient(50% 24% at 50% 82%, rgb(206 228 255 / 80%) 0%, rgb(206 228 255 / 0%) 72%),
-			radial-gradient(40% 20% at 92% 8%, #e3f1ff 0%, rgb(227 241 255 / 0%) 70%),
-			linear-gradient(180deg, #fff 0%, #f6faff 100%);
-	}
-	.eyecatch3 .eye_img .fir img {
-		filter: drop-shadow(0 24px 32px rgb(13 43 78 / 14%));
 	}
 
 }
@@ -503,14 +563,399 @@
 	font-weight: 600;
 }
 
-/* 高さの低い横長の画面：見出しはこれまでどおり */
+/* 高さの低い横長の画面：見出しはこれまでどおり。メインキャッチの小さい言葉は12px以上にする */
 @media screen and ( min-width:761px ) and ( max-height:560px ) and ( orientation:landscape ) {
 	:root {
 		--fv-h1: clamp(22px, 6.3vh, 30px);
+	}
+	.fv_catch {
+		--fv-catch-s: .55;
 	}
 }
 
 /* 3つの強み（月桂樹）：色を強める加工をやめ、元の落ち着いた青に戻す（PC・タブレット・スマホ共通） */
 .eyecatch3 .eye_in_2 .fv_award img {
 	filter: none;
+}
+
+/* タブレットの大きさの画面：見出しを上に大きく、その下を左右2等分、ボタンはその下
+   対象：幅 600〜1023px（横向きは高さ561px以上）と、幅 1024〜1279px の縦向き
+  （iPad mini・iPad・iPad Pro の縦向き、7インチのタブレット、幅を狭めたPCのウィンドウ）
+   ・1段目：ラベルと見出しを、ヘッダーのすぐ下の中央に置く（見出しはPCと同じ組み方のまま、かたまりごと中央に）
+   ・2段目：画面を左右に2等分し、左に前置き・本文（と3つの強み）、右に人物（後ろに記事のコラージュと淡い光）
+   ・3段目：白いシートの上に、ボタン（ひとこと・2つのボタン・注記）。シートの上端で人物の写真の下端を隠す
+     幅 768px 未満では左の列が狭いので、3つの強みはシートの上（ボタンの上）に中央ぞろえで置く（スマホと同じ並び）
+   ・大きさは画面の幅（vw）に合わせてなめらかに変え、人物の高さは画面の高さに合わせる
+   この下の画面（スマホ・PC）のどの指定が残っていても同じ見た目になるよう、組み方に関わる値はここですべて決め直す
+----------------------------------------------------------- */
+
+@media screen and ( min-width:600px ) and ( max-width:1023px ) and ( min-height:561px ), screen and ( min-width:1024px ) and ( max-width:1279px ) and ( orientation:portrait ) {
+
+	:root {
+		/* 左右の余白・2列のあいだ */
+		--mid-g: clamp(24px, 4.6vw, 48px);
+		/* 中身の幅（最大1080px）と、1列の幅（2等分） */
+		--mid-w: min(calc(100vw - var(--mid-g) * 2), 1080px);
+		--mid-col: calc((var(--mid-w) - var(--mid-g)) / 2);
+		/* ヘッダーの高さ */
+		--mid-hdr: 64px;
+		/* 見出しの基準の大きさ（「ツギハギ記事」はこの 1.36倍） */
+		--fv-h1: clamp(38px, min(6vw, 7.5vh), 60px);
+		/* 人物の下に続くもの（ボタンのシート）のおよその高さ */
+		--mid-below: 250px;
+		/* 人物の写真の高さ：画面の高さから、ヘッダー・見出し・ボタンのシートを引いた残り。
+		   ただし列の幅の1.62倍まで（人物の幅が列の約93%まで）、少なくとも「画面の高さの52%」と「400px」の小さい方 */
+		--mid-man: min(calc(var(--mid-col) * 1.62), max(min(52vh, 400px), calc(100vh - var(--mid-hdr) - var(--fv-h1) * 3.94 - var(--mid-below))));
+	}
+	@supports (height: 100svh) {
+		:root {
+			--fv-h1: clamp(38px, min(6vw, 7.5svh), 60px);
+			--mid-man: min(calc(var(--mid-col) * 1.62), max(min(52svh, 400px), calc(100svh - var(--mid-hdr) - var(--fv-h1) * 3.94 - var(--mid-below))));
+		}
+	}
+
+	/* ヘッダー：左右の端を中身の端にそろえ、2つのボタンをカプセルにまとめる */
+	.header_bg .inner.fv_header {
+		width: var(--mid-w);
+		max-width: none;
+		height: var(--mid-hdr);
+		margin: 0 auto;
+		padding: 0;
+	}
+	.brand_logo img {
+		height: 40px;
+	}
+	.fv_header_cta {
+		gap: 2px;
+		padding: 4px;
+		border: 1px solid rgb(13 43 78 / 8%);
+		background: rgb(255 255 255 / 84%);
+		box-shadow: 0 14px 32px -20px rgb(13 43 78 / 40%), inset 0 1px 0 #fff;
+	}
+	.fv_header_btn--sub {
+		display: inline-flex;
+	}
+	.fv_header_btn {
+		--hb: 34px;
+		font-size: 12.5px;
+	}
+
+	.eyecatch3 {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		min-height: 100svh;
+		padding: 0;
+		overflow: hidden;
+		background:
+			radial-gradient(30% 40% at 94% 12%, #e3f1ff 0%, rgb(227 241 255 / 0%) 70%),
+			radial-gradient(28% 34% at 82% 100%, #fff5d6 0%, rgb(255 245 214 / 0%) 70%),
+			linear-gradient(180deg, #fff 0%, #f7faff 100%);
+	}
+
+	/* 格子：1 ラベル / 2 見出し /（すき間）/ 3 本文・人物 / 4 3つの強み・人物 /（すき間）/ 5 ボタン */
+	.eyecatch3 > .inner {
+		display: grid;
+		flex: 0 0 auto;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		grid-template-rows: auto auto 1fr auto auto 1fr auto;
+		grid-template-areas:
+			"lead  lead"
+			"catch catch"
+			".     img"
+			"sub   img"
+			"award img"
+			".     img"
+			"cta   cta";
+		column-gap: var(--mid-g);
+		row-gap: 0;
+		align-items: start;
+		justify-items: stretch;
+		width: var(--mid-w);
+		max-width: none;
+		margin: 0 auto;
+		padding: calc(var(--mid-hdr) + 18px) 0 0;
+	}
+	.eyecatch3 > .inner::after {
+		position: absolute;
+	}
+	/* 白いシート：ボタンの段（幅768px未満では3つの強みの段から）を、画面の端から端まで敷き、ページの下まで伸ばす。
+	   上の角は丸く、上へやわらかい影。人物の写真の下端（24px）はこのシートの下に隠れる */
+	.eyecatch3 > .inner::before {
+		content: "";
+		z-index: 2;
+		grid-row: cta-start / cta-end;
+		grid-column: 1 / -1;
+		align-self: stretch;
+		margin: 0 calc(50% - 50vw) -100vh;
+		border-radius: 28px 28px 0 0;
+		background: linear-gradient(180deg, #fff 0, #f6f9ff 260px);
+		box-shadow: 0 -16px 34px -20px rgb(13 43 78 / 30%);
+		pointer-events: none;
+	}
+	.eyecatch3 .eye_in_2,
+	.eyecatch3 .eye_in_txt {
+		display: contents;
+	}
+	/* 箱のない要素の不透明度は描画に効かないが、どのブラウザでも確実に見えるよう、明示的に表示の状態にしておく（スマホと同じ） */
+	.eyecatch3 .eye_in_txt {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* 1段目：ラベル（左右に線）と見出しを中央に */
+	.eyecatch3 .fv_lead {
+		grid-area: lead;
+		justify-self: center;
+		width: auto;
+		max-width: none;
+		margin: 0 0 14px;
+		text-align: center;
+	}
+	.eyecatch3 .fv_lead_in {
+		font-size: clamp(13px, 1.6vw, 14px);
+		letter-spacing: .1em;
+	}
+	.eyecatch3 .fv_lead_in::before,
+	.eyecatch3 .fv_lead_in::after {
+		content: "";
+		flex: none;
+		width: 28px;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--fv-blue);
+	}
+	.eyecatch3 .fv_lead_in::before {
+		margin-right: 12px;
+	}
+	.eyecatch3 .fv_lead_in::after {
+		margin-left: 12px;
+		transform-origin: right center;
+	}
+	/* 見出しは、PCと同じ組み方（「Web上にある」は「の左端、「は、もう読まれない。」は」の右端にそろえる）のまま、かたまりごと中央に */
+	.eyecatch3 .fv_catch {
+		--fv-catch-s: .469;
+		--fv-catch-lh: 1.28;
+		grid-area: catch;
+		justify-self: center;
+		position: relative;
+		z-index: 2;
+		width: max-content;
+		margin: 0;
+		font-size: var(--fv-h1);
+		line-height: 1.28;
+		letter-spacing: .01em;
+		text-align: left;
+	}
+	.eyecatch3 .fv_catch > span:nth-child(3) {
+		width: calc(var(--fv-catch-k) * 6.75em + .17em);
+		text-align: right;
+	}
+
+	/* 2段目の左：前置き・本文・3つの強み（人物の高さの中で、上下の中央に。上下に同じすき間） */
+	.eyecatch3 .fv_sub {
+		grid-area: sub;
+		position: relative;
+		z-index: 1;
+		margin: 24px 0 0;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: none;
+		box-shadow: none;
+		text-align: left;
+	}
+	.eyecatch3 .fv_sub::before,
+	.eyecatch3 .fv_sub .fv_sub_head::after {
+		content: none;
+	}
+	.eyecatch3 .fv_sub .fv_sub_head {
+		margin-bottom: 10px;
+		padding: 0;
+		border: 0;
+		font-size: clamp(16px, 2.1vw, 20px);
+		line-height: 1.55;
+		letter-spacing: .02em;
+	}
+	/* 本文：列の幅で自然に折り返す（PC用の改行は使わない。言葉の切れ目で折り返す） */
+	.eyecatch3 .fv_sub p {
+		font-size: clamp(14px, 1.75vw, 16px);
+		line-height: 1.95;
+		text-wrap: pretty;
+	}
+	.eyecatch3 .fv_sub br.pc {
+		display: none;
+	}
+	.eyecatch3 .eye_in_2 .fv_award {
+		grid-area: award;
+		justify-self: start;
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		max-width: 400px;
+		margin: clamp(22px, 3vw, 30px) 0 24px;
+	}
+
+	/* 2段目の右：人物。列の中央に、下端をシートの上端に合わせて立たせる（下の 24px はシートの下に隠れる） */
+	.eyecatch3 .eye_img {
+		grid-area: img;
+		position: relative;
+		z-index: 1;
+		align-self: end;
+		width: auto;
+		height: var(--mid-man);
+		margin: 10px 0 -24px;
+		padding: 0;
+		overflow: visible;
+		border-radius: 0;
+		clip-path: none;
+		background: radial-gradient(48% 42% at 52% 42%, rgb(206 228 255 / 90%) 0%, rgb(206 228 255 / 0%) 100%) no-repeat;
+	}
+	.eyecatch3 .eye_img .fir {
+		position: absolute;
+		z-index: 1;
+		top: auto;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		width: auto;
+		margin: 0;
+	}
+	/* 写真（縦長 1024×1536。人物は横 10.25%〜96%）：人物の左右の中心（写真の 53.1%）を列の中央に合わせる */
+	.eyecatch3 .eye_img .fir img {
+		position: static;
+		flex: none;
+		width: auto;
+		max-width: none;
+		height: var(--mid-man);
+		max-height: none;
+		margin: 0;
+		transform: translateX(-3.1%);
+		filter: drop-shadow(0 24px 32px rgb(13 43 78 / 14%));
+	}
+	/* 記事のコラージュ：人物の後ろに、右へはみ出して浮かべる。左側はふわっと消して、左の文字にかからないようにする */
+	.eyecatch3 .eye_img .sec {
+		position: absolute;
+		z-index: 0;
+		top: 4%;
+		right: auto;
+		bottom: auto;
+		left: -6%;
+		width: 150%;
+		margin: 0;
+	}
+	.eyecatch3 .eye_img .sec.fade_down {
+		opacity: .85 !important;
+	}
+	.eyecatch3 .eye_img .sec img {
+		display: block;
+		width: 100%;
+		max-width: none;
+		height: auto;
+		opacity: 1;
+		filter: blur(1.2px);
+		-webkit-mask-image: linear-gradient(100deg, transparent 0%, #000 22%);
+		mask-image: linear-gradient(100deg, transparent 0%, #000 22%);
+	}
+
+	/* 3段目：ボタン（白いシートの上） */
+	.eyecatch3 .fv_cta {
+		grid-area: cta;
+		position: relative;
+		z-index: 3;
+		margin: 0;
+		padding: clamp(30px, 4vw, 40px) 0 clamp(36px, 5vw, 52px);
+		text-align: center;
+	}
+	.eyecatch3 .fv_cta_micro {
+		margin-bottom: 10px;
+		font-size: 13.5px;
+	}
+	/* ボタンは横に2つ、中央に。同じ高さ（58px） */
+	.eyecatch3 .fv_cta_btns {
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: center;
+		gap: 16px;
+		max-width: none;
+	}
+	.eyecatch3 .fv_cta_main,
+	.eyecatch3 .fv_btn--sub {
+		flex: 0 1 auto;
+	}
+	.eyecatch3 .fv_cta_main {
+		width: auto;
+		max-width: none;
+	}
+	.eyecatch3 .fv_btn {
+		--chip: 42px;
+		gap: 8px;
+		width: auto;
+		height: 58px;
+		padding: 0 calc(var(--chip) + 16px) 0 22px;
+	}
+	.eyecatch3 .fv_btn::before {
+		width: 19px;
+		height: 19px;
+	}
+	.eyecatch3 .fv_btn::after {
+		right: 8px;
+	}
+	.eyecatch3 .fv_btn--main {
+		min-width: clamp(250px, 33vw, 320px);
+		max-width: none;
+		font-size: 16.5px;
+	}
+	.eyecatch3 .fv_btn--sub {
+		min-width: clamp(230px, 29vw, 280px);
+		max-width: none;
+		height: 58px;
+		font-size: 15px;
+	}
+	.eyecatch3 .fv_cta_note {
+		margin-top: 20px;
+		font-size: 12.5px;
+		text-align: center;
+		word-break: auto-phrase;
+		text-wrap: balance;
+	}
+
+}
+
+/* タブレットの組み方で幅 768px 未満：左の列が狭いので、3つの強みはシートの上（ボタンの上）に中央ぞろえで置く */
+@media screen and ( min-width:600px ) and ( max-width:767px ) and ( min-height:561px ) {
+
+	:root {
+		--mid-below: 380px;
+	}
+	.eyecatch3 > .inner {
+		grid-template-rows: auto auto 1fr auto 1fr auto auto;
+		grid-template-areas:
+			"lead  lead"
+			"catch catch"
+			".     img"
+			"sub   img"
+			".     img"
+			"award award"
+			"cta   cta";
+	}
+	.eyecatch3 > .inner::before {
+		grid-row: award-start / cta-end;
+	}
+	.eyecatch3 .fv_sub {
+		margin-bottom: 24px;
+	}
+	.eyecatch3 .eye_in_2 .fv_award {
+		justify-self: center;
+		z-index: 3;
+		max-width: 360px;
+		margin: 34px 0 0;
+	}
+	.eyecatch3 .fv_cta {
+		padding-top: 24px;
+	}
+
 }

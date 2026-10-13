@@ -68,74 +68,102 @@
 	white-space: nowrap;
 }
 
-/* ヘッダーのボタン：シンプルで、かわいく
-   ・枠も厚みもない、やわらかい色のまるいボタン。文字の前に小さな線のアイコンを1つだけ（資料＝ダウンロード、相談＝吹き出し）
-   ・資料は淡い青に青い文字、相談はゴールドに白い文字
-   ・ホバーすると少しだけ浮き、押すとふにっと小さくなる
-   ・大きさはボタンの高さ（--hb）から決める。画面ごとの指定は --hb と文字の大きさだけ
+/* ヘッダーのボタン：2つのボタンを、半透明の白いカプセル1つにまとめる
+   ・資料：カプセルの中の静かなボタン（紺の文字と青いダウンロードのアイコン）。ホバーで淡い青の地が出る
+   ・相談：カプセルの中のゴールドのボタン。本文の「無料で相談する」と同じ作り（うっすらツヤ・右に白い丸と矢印）。
+     ゴールドは本文のボタンより少しだけ深くして、小さな白い文字でも読みやすくする（3.1:1、ホバー時 3.7:1）。
+     ツヤは文字より上（上から30%まで）にだけかけ、文字の後ろの色は薄めない
+   ・スマホは相談のボタンだけなので、カプセルの枠はつけず、ゴールドのボタンだけを置く
+   ・ボタンの大きさは高さ（--hb）から決める。画面ごとの指定は --hb と文字の大きさだけ
 ----------------------------------------------------------- */
 
 .fv_header_cta {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 2px;
+	padding: 4px;
+	border: 1px solid rgb(13 43 78 / 8%);
+	border-radius: 999px;
+	/* 背景をぼかす指定（backdrop-filter）は、ページ全体の文字の描き方まで変えてしまうので使わない */
+	background: rgb(255 255 255 / 84%);
+	box-shadow: 0 14px 32px -20px rgb(13 43 78 / 40%), inset 0 1px 0 #fff;
 }
 .fv_header_btn {
-	--hb: 44px;
-	--fv-hdr-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.5c0 4.4-3.8 8-8.5 8-1.3 0-2.6-.3-3.7-.8L4 20l1.2-3.7a7.7 7.7 0 0 1-1.7-4.8c0-4.4 3.8-8 8.5-8s8.5 3.6 8.5 8z'/%3E%3C/svg%3E");
+	--hb: 36px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: .5em;
 	height: var(--hb);
-	padding: 0 calc(var(--hb) * .5) 0 calc(var(--hb) * .42);
+	border: 0;
 	border-radius: 999px;
-	background: var(--fv-gold);
-	box-shadow: 0 8px 16px -10px rgb(176 134 41 / 75%);
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 700;
 	line-height: 1;
 	letter-spacing: .06em;
 	white-space: nowrap;
-	color: #fff !important;
-	transition: transform .2s var(--fv-ease), box-shadow .25s var(--fv-ease), background-color .25s var(--fv-ease);
+	transition: background-color .2s var(--fv-ease), color .2s var(--fv-ease), box-shadow .2s var(--fv-ease), transform .2s var(--fv-ease);
 	-webkit-tap-highlight-color: transparent;
 }
-/* 文字の前の小さなアイコン（文字と同じ色） */
-.fv_header_btn::before {
+
+/* 相談：ゴールドに白い文字。右に白い丸（ボタンの右の丸みと中心をそろえる）と金色の矢印 */
+.fv_header_btn:not(.fv_header_btn--sub) {
+	gap: calc(var(--hb) * .26);
+	padding: 0 calc(var(--hb) * .12) 0 calc(var(--hb) * .5);
+	background:
+		linear-gradient(180deg, rgb(255 255 255 / 20%) 0%, rgb(255 255 255 / 0%) 30%),
+		#b78c38;
+	box-shadow: 0 6px 14px -8px rgb(170 125 35 / 70%);
+	color: #fff !important;
+	text-shadow: 0 1px 2px rgb(110 78 10 / 30%);
+}
+.fv_header_btn:not(.fv_header_btn--sub)::after {
+	content: "";
+	flex: none;
+	width: calc(var(--hb) * .76);
+	height: calc(var(--hb) * .76);
+	border-radius: 50%;
+	background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a7420' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") 50% 50% / 50% no-repeat;
+	transition: background-position .2s var(--fv-ease);
+}
+.fv_header_btn:not(.fv_header_btn--sub):hover {
+	background-color: #a67e30;
+	box-shadow: 0 8px 16px -8px rgb(170 125 35 / 75%);
+}
+.fv_header_btn:not(.fv_header_btn--sub):hover::after {
+	background-position: calc(50% + 2px) 50%;
+}
+.fv_header_btn:not(.fv_header_btn--sub):active {
+	transform: translateY(1px);
+}
+
+/* 資料：カプセルの中の静かなボタン。紺の文字に青いダウンロードのアイコン */
+.fv_header_btn--sub {
+	gap: calc(var(--hb) * .2);
+	padding: 0 calc(var(--hb) * .44) 0 calc(var(--hb) * .38);
+	background: transparent;
+	color: var(--fv-navy) !important;
+}
+.fv_header_btn--sub::before {
 	content: "";
 	flex: none;
 	width: 1.15em;
 	height: 1.15em;
-	background: currentColor;
-	-webkit-mask: var(--fv-hdr-icon) center / contain no-repeat;
-	mask: var(--fv-hdr-icon) center / contain no-repeat;
-}
-.fv_header_btn:hover {
-	background-color: var(--fv-gold-hover);
-	box-shadow: 0 10px 18px -10px rgb(176 134 41 / 85%);
-	transform: translateY(-1px);
-}
-.fv_header_btn:active {
-	box-shadow: 0 6px 12px -10px rgb(176 134 41 / 75%);
-	transform: scale(.96);
-	transition-duration: .1s;
-}
-
-/* 資料のボタン：淡い青に青い文字。影はつけず、相談のボタンより一歩ひかえめに */
-.fv_header_btn--sub {
-	--fv-hdr-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v10.5M7.5 9.5 12 14l4.5-4.5M4.5 15v2.5a2.5 2.5 0 0 0 2.5 2.5h10a2.5 2.5 0 0 0 2.5-2.5V15'/%3E%3C/svg%3E");
-	background: #e9f2fe;
-	box-shadow: none;
-	/* ブランドの青（#1769e0）をほんの少し深くして、淡い青の地でも読みやすくする（コントラスト 5.2:1、ホバー時 4.8:1） */
-	color: #155fcf !important;
+	background: var(--fv-blue);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v10.5M7.5 9.5 12 14l4.5-4.5M4.5 15v2.5a2.5 2.5 0 0 0 2.5 2.5h10a2.5 2.5 0 0 0 2.5-2.5V15'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v10.5M7.5 9.5 12 14l4.5-4.5M4.5 15v2.5a2.5 2.5 0 0 0 2.5 2.5h10a2.5 2.5 0 0 0 2.5-2.5V15'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .fv_header_btn--sub:hover {
-	background-color: #dce9fd;
-	box-shadow: none;
+	background-color: #eef4fd;
+	color: var(--fv-blue) !important;
 }
 .fv_header_btn--sub:active {
-	box-shadow: none;
+	background-color: #e3edfc;
+}
+
+/* キーボードで選んだとき：はっきり見える青い線で囲む（ヘッダーの2つのボタンだけ） */
+.fv_header_cta .fv_header_btn:focus-visible {
+	outline: 2px solid var(--fv-blue);
+	outline-offset: 2px;
 }
 
 /* FV コピー
@@ -179,13 +207,180 @@
 	color: var(--fv-navy);
 	font-feature-settings: "palt";
 }
-.fv_catch span {
+.fv_catch > span {
 	display: block;
 	white-space: nowrap;
 }
-.fv_catch span:nth-child(2) {
-	font-size: 1.08em;
+/* メインキャッチ（案A）：「ツギハギ記事」を1行に独立させ、日本で人気のおしゃれな書体（Zen Kaku Gothic New の Black＝900）で、前後の言葉の約3倍の大きさにする
+   ・書体は Google Fonts の日本語書体で人気上位（日本語68書体中4位。上は標準の Noto Sans JP・Noto Serif JP と丸ゴシックの M PLUS Rounded 1c のみ）。
+     「ツギハギ記事」の8文字だけを読み込む
+   ・行は「Web上にある」／「ツギハギ記事」／「は、もう読まれない。」（文字は1字も変えず、行の切れ目だけを変える）
+   ・--fv-catch-s：前後の言葉の大きさ（見出しの基準の大きさに対する比。ふだんは 0.469）
+   ・--fv-catch-k：「ツギハギ記事」の大きさ ÷ 前後の言葉の大きさ（2.9倍）。
+     「ツギハギ記事」は基準の 1.36倍で、どの画面でも列の幅に収まる（いちばん厳しい比率の画面で列の約95%）
+   ・Zen Kaku Gothic New のかっこは全角の幅（1字分）のままなので、「の左と」の右の空きを、字面の端まで詰める（各0.625字分）
+   ・前後の言葉が12pxより小さくならないよう、低い画面では --fv-catch-s を大きくする（比の 2.9倍はそのまま）
+
+   見出しの高さと、下の本文・人物の位置は、これまでと1/64pxも変わらない：
+   ・各行の頭に、中身のない透明な箱（::before）を、これまでと同じ書体・大きさ・行の高さで置き、行の高さはこの箱で決める
+    （--fv-catch-lh は見出しの行の高さ。ふだんは 1.28）
+   ・見える文字は行の高さ 0 にして行の高さに影響させず、位置ずらし（position: relative。まわりの配置には影響しない）で置く
+   ・置き方：3行をひとかたまりに組む。行と行のすき間は「ツギハギ記事」の大きさの --fv-catch-g 倍（字面と字面のすき間）にし、
+     残りを上と下の余白に同じだけ分ける（--fv-catch-m）
+     文字の上下は字面（インク）で測った値を使う：
+       IBM Plex Sans JP「Web上にある」上 0.8438・下 0.0625／「は、もう読まれない。」上 0.8594・下 0.0938
+       Zen Kaku Gothic New Black「ツギハギ記事」上 0.875・下 0.0781（かっこを除く）
+     行の基準線は、透明な箱（IBM Plex Sans JP。上 1.06・下 0.44）で決まるので、書体の読み込みの前後で行の位置は変わらない */
+.fv_catch {
+	--fv-catch-s: .469;
+	--fv-catch-k: 2.9;
+	--fv-catch-lh: 1.28;
+	--fv-catch-g: .18;
+	--fv-catch-m: calc((3.08 * var(--fv-catch-lh) - 1.8595 * var(--fv-catch-s) - .9531 * var(--fv-catch-s) * var(--fv-catch-k) - 2 * var(--fv-catch-g) * var(--fv-catch-s) * var(--fv-catch-k)) / 2);
+}
+.fv_catch > span {
+	position: relative;
+	line-height: 0;
+}
+.fv_catch > span::before {
+	content: "";
+	line-height: var(--fv-catch-lh);
+}
+/* 1行目「Web上にある」と3行目「は、もう読まれない。」 */
+.fv_catch > span:nth-child(1),
+.fv_catch > span:nth-child(3) {
+	font-size: calc(var(--fv-catch-s) * 1em);
+}
+.fv_catch > span:nth-child(1)::before,
+.fv_catch > span:nth-child(3)::before {
+	font-size: calc(1em / var(--fv-catch-s));
+}
+.fv_catch > span:nth-child(1) {
+	top: calc((var(--fv-catch-m) + .8438 * var(--fv-catch-s) - .5 * var(--fv-catch-lh) - .31) / var(--fv-catch-s) * 1em);
+}
+.fv_catch > span:nth-child(3) {
+	top: calc((var(--fv-catch-m) + 1.7657 * var(--fv-catch-s) + (.9531 + 2 * var(--fv-catch-g)) * var(--fv-catch-s) * var(--fv-catch-k) - 2.58 * var(--fv-catch-lh) - .31) / var(--fv-catch-s) * 1em);
+}
+/* 2行目「ツギハギ記事」：1文字ずつの箱に入れてある（案Bで1文字ずつずらすため。案Aでは何もしない） */
+.fv_catch > .fv_catch_key {
+	top: calc((var(--fv-catch-m) + .9063 * var(--fv-catch-s) + (.875 + var(--fv-catch-g)) * var(--fv-catch-s) * var(--fv-catch-k) - 1.54 * var(--fv-catch-lh) - .3348) / (var(--fv-catch-s) * var(--fv-catch-k)) * 1em);
+	font-size: calc(var(--fv-catch-s) * var(--fv-catch-k) * 1em);
 	color: var(--fv-blue);
+}
+.fv_catch > .fv_catch_key::before {
+	font-size: calc(1.08em / (var(--fv-catch-s) * var(--fv-catch-k)));
+}
+.fv_catch_key > span {
+	font-family: "Zen Kaku Gothic New", "IBM Plex Sans JP", "Noto Sans JP", sans-serif;
+	font-weight: 900;
+	font-synthesis: none;
+	letter-spacing: 0;
+}
+/* かっこの外側の空きを詰める（「の左・」の右。Zen Kaku Gothic New Black の字面の端まで） */
+.fv_catch_key > span:first-child {
+	margin-left: -.625em;
+}
+.fv_catch_key > span:last-child {
+	margin-right: -.625em;
+}
+/* 前後の小さい言葉：字間を少し広げて、くっきり上品に見せる（ジャンプ率と行の切れ目は変えない） */
+.eyecatch3 .fv_catch > span:nth-child(1),
+.eyecatch3 .fv_catch > span:nth-child(3) {
+	letter-spacing: .06em;
+}
+/* 「ツギハギ記事」：上から下へ、ほんの少し深くなる青のグラデーションで厚みを出す。かっこは淡い青にして、言葉そのものを立たせる
+  （文字の形で背景を切り抜いて描く。できないブラウザでは、ふつうの青い文字。ハイコントラスト表示では、ふつうの文字の色） */
+.fv_catch_key > span:first-child,
+.fv_catch_key > span:last-child {
+	color: #5590e6;
+}
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+	.fv_catch_key > span {
+		background: linear-gradient(180deg, #2f80ee 0%, #1a63d6 55%, #1150bd 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+	.fv_catch_key > span:first-child,
+	.fv_catch_key > span:last-child {
+		background: linear-gradient(180deg, #7aa9f0 0%, #4d86e0 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+}
+@media (forced-colors: active) {
+	.fv_catch_key > span,
+	.fv_catch_key > span:first-child,
+	.fv_catch_key > span:last-child {
+		background: none;
+		color: CanvasText;
+	}
+}
+
+/* メインキャッチ（案B）：「ツギハギ記事」の文字を少しずつずらし、継ぎ目を見せて、言葉そのものをツギハギに見せる
+   ・URLの末尾に ?catch=b をつけたときだけ（<html> に .fv-catch-b がつく）。大きさ・行の高さ・行の位置は案Aと同じ
+   ・1文字ずつ、上下に少しずらす（文字の大きさの 3〜5%。位置ずらしなので、まわりの配置は変わらない）
+   ・1文字ずつ、斜めの継ぎ目で青と紺の2枚の布をはぎ合わせたように塗り分ける。継ぎ目の角度と位置は文字ごとに変える
+   ・塗り分けは文字の形で背景を切り抜いて描く（background-clip: text）
+   ・文字の箱はふつうの文字の並び（inline）のままにする。inline-block などにすると、読み上げソフトが
+     「ツ ギ ハ ギ…」と1文字ずつ区切って読むため（傾きをつけないのもこのため）
+   ・塗り分けができないブラウザでは、1文字おきに青と紺の文字にする。ハイコントラスト表示では、ふつうの文字の色で表示する */
+.fv-catch-b .fv_catch_key > span {
+	position: relative;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(even) {
+	color: var(--fv-navy);
+}
+.fv-catch-b .fv_catch_key > span:nth-child(1) {
+	/* かっこは字面が箱の右上に寄っているので、継ぎ目の位置を字面の中心に合わせる */
+	--seam: linear-gradient(115deg, var(--fv-blue) 0 60%, var(--fv-navy) 60% 100%);
+	top: -.03em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(2) {
+	--seam: linear-gradient(65deg, var(--fv-navy) 0 47%, var(--fv-blue) 47% 100%);
+	top: .05em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(3) {
+	--seam: linear-gradient(120deg, var(--fv-blue) 0 50%, var(--fv-navy) 50% 100%);
+	top: -.04em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(4) {
+	--seam: linear-gradient(60deg, var(--fv-navy) 0 52%, var(--fv-blue) 52% 100%);
+	top: .04em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(5) {
+	--seam: linear-gradient(112deg, var(--fv-blue) 0 46%, var(--fv-navy) 46% 100%);
+	top: -.05em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(6) {
+	--seam: linear-gradient(68deg, var(--fv-navy) 0 53%, var(--fv-blue) 53% 100%);
+	top: .04em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(7) {
+	--seam: linear-gradient(118deg, var(--fv-blue) 0 49%, var(--fv-navy) 49% 100%);
+	top: -.03em;
+}
+.fv-catch-b .fv_catch_key > span:nth-child(8) {
+	/* かっこは字面が箱の左下に寄っているので、継ぎ目の位置を字面の中心に合わせる */
+	--seam: linear-gradient(62deg, var(--fv-navy) 0 28%, var(--fv-blue) 28% 100%);
+	top: .03em;
+}
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+	.fv-catch-b .fv_catch_key > span,
+	.fv-catch-b .fv_catch_key > span:nth-child(even) {
+		background: var(--seam);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+}
+@media (forced-colors: active) {
+	.fv-catch-b .fv_catch_key > span,
+	.fv-catch-b .fv_catch_key > span:nth-child(even) {
+		background: none;
+		color: CanvasText;
+	}
 }
 
 .fv_sub {
@@ -394,6 +589,10 @@
 .eyecatch3 .eye_img .fir {
 	transition-delay: .1s;
 }
+/* 人物の写真は飾り。写真の透明な部分が文字やボタンの上にかかっても、クリックやタップは下に通す */
+.eyecatch3 .eye_img .fir img {
+	pointer-events: none;
+}
 
 /* スマホのヘッダー
 ----------------------------------------------------------- */
@@ -412,25 +611,33 @@
 		display: none;
 	}
 	.fv_header_btn {
-		--hb: 36px;
-		font-size: 12.5px;
+		--hb: 32px;
+		font-size: 12px;
+	}
+	/* ボタンが1つだけなので、カプセルの枠はつけない */
+	.fv_header_cta {
+		padding: 0;
+		border: 0;
+		background: none;
+		box-shadow: none;
 	}
 
 }
 
-/* 幅の狭いスマホ（360px未満）：ロゴとのあいだにゆとりを残すため、ボタンの右の余白と字間を少し詰める */
+/* 幅の狭いスマホ（360px未満）：ロゴとのあいだにゆとりを残すため、相談のボタンの左の余白・矢印とのすき間・字間を少し詰める */
 @media screen and ( max-width:359px ) {
-	.fv_header_btn {
-		padding-right: calc(var(--hb) * .4);
+	.fv_header_btn:not(.fv_header_btn--sub) {
+		gap: calc(var(--hb) * .2);
+		padding-left: calc(var(--hb) * .4);
 		letter-spacing: .03em;
 	}
 }
 
-/* 縦に積むレイアウト（スマホと、縦向きのタブレット）
+/* 縦に積むレイアウト（スマホ。幅600px以上のタブレットの大きさの画面は fv-fill.css の最後の組み方で組み直す）
    タブレットにはスマホ用の既存CSSが効かないので、必要な指定はここで全部持つ
 ----------------------------------------------------------- */
 
-@media screen and ( max-width:760px ), screen and ( max-width:1279px ) and ( orientation:portrait ) {
+@media screen and ( max-width:760px ) {
 
 	.eyecatch3 {
 		padding: 76px 0 0;
@@ -576,107 +783,6 @@
 		filter: blur(1.5px);
 		-webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
 		mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
-	}
-
-}
-
-/* 縦向きのタブレット：PCと同じヘッダー、文字とボタンはひと回り大きく、ボタンは横に並べる
------------------------------------------------------------ */
-
-@media screen and ( min-width:761px ) and ( max-width:1279px ) and ( orientation:portrait ) {
-
-	.header_bg .inner.fv_header {
-		width: calc(100% - 64px);
-		height: 84px;
-	}
-
-	.eyecatch3 {
-		padding-top: 128px;
-	}
-	.eyecatch3 > .inner {
-		width: calc(100% - 64px);
-	}
-	.eyecatch3 .eye_in_2 {
-		max-width: 680px;
-	}
-
-	.fv_lead {
-		margin-bottom: 18px;
-	}
-	.fv_lead_in {
-		font-size: 15px;
-		letter-spacing: .12em;
-	}
-	.fv_lead_in::before,
-	.fv_lead_in::after {
-		width: 32px;
-	}
-	.fv_lead_in::before {
-		margin-right: 14px;
-	}
-	.fv_lead_in::after {
-		margin-left: 14px;
-	}
-
-	h1.fv_catch {
-		font-size: clamp(40px, 5.6vw, 56px);
-	}
-
-	.fv_sub {
-		margin-top: 26px;
-		padding: 22px 28px;
-		border-radius: 20px;
-	}
-	.fv_sub p {
-		font-size: 15.5px;
-		line-height: 1.9;
-	}
-	.fv_sub .fv_sub_head {
-		margin-bottom: 6px;
-		font-size: 18px;
-	}
-
-	.fv_cta {
-		margin-top: 30px;
-	}
-	.fv_cta_btns {
-		flex-direction: row;
-		align-items: flex-end;
-		justify-content: center;
-		gap: 14px;
-	}
-	.fv_btn {
-		width: auto;
-		height: 62px;
-	}
-	.fv_btn--sub {
-		height: 62px;
-	}
-	.fv_btn--main {
-		min-width: 300px;
-	}
-	.fv_btn--sub {
-		min-width: 260px;
-	}
-	.fv_cta_note {
-		margin-top: 16px;
-		font-size: 13px;
-	}
-
-	.eyecatch3 .eye_in_2 .fv_award {
-		max-width: 440px;
-		margin-top: 34px;
-	}
-
-	.eyecatch3 .eye_img .fir {
-		width: min(460px, 58vw);
-		margin-top: 28px;
-	}
-	.eyecatch3 .eye_img .sec {
-		margin-left: -380px;
-	}
-	.eyecatch3 .eye_img .sec img {
-		width: 760px;
 	}
 
 }
@@ -862,7 +968,8 @@
 		mask-image: linear-gradient(180deg, transparent 0%, #000 14%);
 	}
 
-	/* 人物：段の下端に立たせ、右端に寄せる（写真の右側の透明な6.25%の分だけ右へずらし、腕の端を画面の端に合わせる） */
+	/* 人物：段の下端に立たせ、右端に寄せる。写真（縦長 1024×1536）の右側の透明な 4% の分だけ右へずらし、書類の端を画面の端に合わせる。
+	   写真の高さは段の高さの 1.0292倍（人物の頭の高さを、前の写真のときと同じにする。上の透明な部分は段の外に出て隠れる） */
 	.eyecatch3 .eye_img .fir {
 		position: absolute;
 		z-index: 1;
@@ -877,12 +984,21 @@
 		margin: 0;
 	}
 	.eyecatch3 .eye_img .fir img {
+		position: relative;
 		flex: none;
 		width: auto;
 		max-width: none;
-		height: 100%;
-		max-height: 140vw;
-		transform: translateX(6.25%);
+		height: 102.92%;
+		max-height: calc(140vw * 1.0292);
+		transform: translateX(4%);
+	}
+	/* 縦に長い画面（幅に対して高さがある画面）では、写真が上限（幅の約145%）で止まり、段の下端に立つため頭の上が空き、
+	   人物の大半が白いシートに隠れる。そのときは写真を上へ上げて、ほかの画面と同じく頭を段の上端の近くに置き、上半身を見せる。
+	   ・上げる量 ＝ 段の高さ − 写真の高さ × 0.97163（頭の上の空きを、ほかの画面と同じ写真の高さの1.3%にする）。上限に達していなければ 0（今までどおり）
+	   ・ただし写真の下端は、白いシートの上端より 40px 以上下に残す（腰の切れ目をシートの下に隠す）。
+	     シートの上端は、段の上端から（--sp-vis − 18px）の所 */
+	.eyecatch3 .eye_img .fir img {
+		bottom: clamp(0px, calc(100% - min(102.92%, 140vw * 1.0292) * .97163), calc(100% - var(--sp-vis) + 18px - 40px));
 	}
 
 	/* 本文：写真の下の方に、上の角を丸めた白いシートを重ね、その上に中央ぞろえで置く。
@@ -1069,6 +1185,8 @@
 	}
 
 	h1.fv_catch {
+		--fv-catch-s: .55;
+		--fv-catch-lh: 1.25;
 		font-size: clamp(22px, 7vh, 26px);
 		line-height: 1.25;
 	}
@@ -1167,13 +1285,15 @@
 		-webkit-mask-image: none;
 		mask-image: none;
 	}
+	/* 人物の写真（縦長 1024×1536）を、前の写真のときと同じ大きさ・頭の高さ・中心で見せる
+	  （写真の幅はパネルの 58.66%＝前の 57% × 1.0292。頭の始まりが少し低い分だけ、パネルの幅の 2.5% 上げる。パネルの幅は min(100vw − 40px, 600px)） */
 	.eyecatch3 .eye_img .fir {
 		position: absolute;
-		top: 7%;
-		right: -1%;
+		top: calc(7% - min(100vw - 40px, 600px) * .025);
+		right: -1.8%;
 		bottom: auto;
 		left: auto;
-		width: 57%;
+		width: 58.66%;
 		margin: 0;
 	}
 
@@ -1188,11 +1308,6 @@
 	.brand_logo img {
 		height: 32px;
 	}
-	.fv_header_btn {
-		--hb: 32px;
-		font-size: 12px;
-	}
-
 	.eyecatch3 {
 		padding-top: 52px;
 	}
@@ -1203,6 +1318,8 @@
 		font-size: 11.5px;
 	}
 	h1.fv_catch {
+		--fv-catch-s: .64;
+		--fv-catch-lh: 1.22;
 		font-size: clamp(19px, 6.2vh, 23px);
 		line-height: 1.22;
 	}
@@ -1391,15 +1508,17 @@
 	.fv_btn:hover::after {
 		transform: none;
 	}
-	/* ヘッダーのボタン：タップのあと浮いたまま・色が変わったまま残らないようにする（押している間の動きは残す） */
-	.fv_header_btn:hover:not(:active) {
-		background-color: var(--fv-gold);
-		box-shadow: 0 8px 16px -10px rgb(176 134 41 / 75%);
-		transform: none;
+	/* ヘッダーのボタン：タップのあと、ホバーの色や矢印のずれが残らないようにする（押している間だけホバーの色になる） */
+	.fv_header_btn:not(.fv_header_btn--sub):hover:not(:active) {
+		background-color: #b78c38;
+		box-shadow: 0 6px 14px -8px rgb(170 125 35 / 70%);
+	}
+	.fv_header_btn:not(.fv_header_btn--sub):hover:not(:active)::after {
+		background-position: 50% 50%;
 	}
 	.fv_header_btn--sub:hover:not(:active) {
-		background-color: #e9f2fe;
-		box-shadow: none;
+		background-color: transparent;
+		color: var(--fv-navy) !important;
 	}
 }
 
@@ -1427,5 +1546,15 @@
 	}
 	.eyecatch3 .fv_btn--main {
 		animation: none;
+	}
+	/* ヘッダーの相談のボタン：ホバーしても矢印を動かさず、押しても沈ませない（色の変化だけにする） */
+	.fv_header_btn:not(.fv_header_btn--sub)::after {
+		transition: none;
+	}
+	.fv_header_btn:not(.fv_header_btn--sub):hover::after {
+		background-position: 50% 50%;
+	}
+	.fv_header_btn:not(.fv_header_btn--sub):active {
+		transform: none;
 	}
 }
